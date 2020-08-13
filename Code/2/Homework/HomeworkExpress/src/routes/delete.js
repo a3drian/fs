@@ -10,11 +10,11 @@ module.exports.DELETERouter = DELETERouter;
 DELETERouter.get("/", getDELETEClient);
 
 function getDELETEClient(_req, res, next) {
-	try {
-		const clientSettings = env.DELETE_ROUTE;
-		res.write(clientSettings);
-		return res.end();
-	} catch (ex) {
-		return next(ex);
-	}
+    try {
+        const clientSettings = env.DELETE_ROUTE;
+        res.write(clientSettings);
+        return res.end();
+    } catch (ex) {
+        return next(ex);
+    }
 }

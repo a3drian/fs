@@ -1,0 +1,86 @@
+Angular: Getting Started
+
+2. Introduction
+--------------------
+Introduction
+----------
+-how to build an Angular application
+-Angular = JavaScript framework for building client-side applications with HTML, CSS and TypeScript
+-Angular adds expression to HTML: if() conditions, for() loops, variables, etc.
+-Angular provides powerful data binding
+-Angular is modular
+-Angular has support for communication with backend
+
+Anatomy of an Angular application
+----------
+-(?)
+
+Get the Most from This Course
+----------
+https://blogs.msmvps.com/deborahk/angular-2-getting-started-problem-solver/
+https://github.com/DeborahK/Angular-GettingStarted
+
+Sample Application
+----------
+-Acme Product Management
+
+3. First Things First
+--------------------
+TypeScript
+----------
+-strongly typed = everything has a data type
+https://typescriptlang.org/play
+
+Setting up the Angular Application
+----------
+-am folosit "APM Start" de pe repo
+
+Running and Angular Application
+----------
+ng serve -o
+-builds the application and starts a local server
+-"-o" opens a browser
+
+About Modules
+----------
+-an Angular module = code files that organizes the functionality of the application into blocks, called modules
+-ES Modules = code modules
+-Angular Modules = application modules
+
+4. Introduction to Components
+--------------------
+What is a Component?
+----------
+Component = class + template + metadata
+
+Demo: Creating the App Component
+----------
+-(?)
+
+Demo: Bootstrapping Our Application
+----------
+-
+
+
+5. Templates, Interpolation and Directives
+--------------------
+6. Data Binding & Pipes
+--------------------
+7. More on Components
+--------------------
+8. Building Nested Components
+--------------------
+9. Services and Dependency Injection
+--------------------
+10. Retrieveing Data Using HTTP
+--------------------
+11. Navigation and Routing Basics
+--------------------
+12. Navigation and Routing Additional Techniques
+--------------------
+13. Angular Modules
+--------------------
+14. Building, Testing, and Deploying with the CLI
+--------------------
+15. Final Words
+--------------------

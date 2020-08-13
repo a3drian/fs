@@ -1,0 +1,1 @@
+mongod --port 27017 --dbpath D:\Projects\Facultate\II\II_Sem_2_10_REPOS\Waters\Mongo

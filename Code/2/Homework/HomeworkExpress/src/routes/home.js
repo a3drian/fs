@@ -10,25 +10,25 @@ module.exports.homeRouter = homeRouter;
 homeRouter.get("/", getHomeClient);
 
 function getHomeClient(_req, res, next) {
-	try {
-		console.log('before reading file');
-		fs.readFile('index.html', 'UTF-8', (error, data) => {
+    try {
+        console.log('before reading file (home.js)');
+        fs.readFile('src/index.html', 'UTF-8', (error, data) => {
 
-			if (error) {
-				console.log(error);
-				res.write(String(error));
-				res.end();
-			} else {
-				// console.log(data);
-				console.log('after reading file');
+            if (error) {
+                console.log(error);
+                res.write(String(error));
+                res.end();
+            } else {
+                // console.log(data);
+                console.log('after reading file (home.js)');
 
-				res.writeHead(200, { 'Content-Type': 'text/html' });
-				res.write(data);
-				res.end();
-				return res;
-			}
-		});
-	} catch (ex) {
-		return next(ex);
-	}
+                res.writeHead(200, { 'Content-Type': 'text/html' });
+                res.write(data);
+                res.end();
+                return res;
+            }
+        });
+    } catch (ex) {
+        return next(ex);
+    }
 }

@@ -10,6 +10,10 @@ const { POSTRouter } = require('./routes/post');
 const { PUTRouter } = require('./routes/put');
 const { DELETERouter } = require('./routes/delete');
 
+// pentru POST
+const bodyParser = require('body-parser');
+
+// function exported
 module.exports.makeApp = makeApp;
 
 let app;
@@ -21,6 +25,10 @@ function makeApp() {
 
     // pentru .css
     app.use(express.static(path.join(__dirname, 'public')));
+
+    // pentru POST
+    app.use(bodyParser.json()); // support json encoded bodies
+    app.use(bodyParser.urlencoded({ extended: true })); // support encoded bodies
 
     // routes
     app.use(env.HOME_ROUTE, homeRouter);

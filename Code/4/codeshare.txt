@@ -1,0 +1,291 @@
+--------------------CURS 4--------------------
+npm i -D jasmine
+npm i -D @types/jasmine
+
+
+describe("test suite", () => {
+    it("test 1", () => expect(1).toBe(1, "this test should not fail"));
+    it("test 2", () => expect(1).toBe(2, "this test failed miserably"));
+});
+
+"test:unit": "ts-node-dev node_modules/jasmine/bin/jasmine --config=spec/support/jasmine.json",
+
+export class AJsonModel {
+	key1: string;
+	"key 2": string;
+	constructor(model?: any) {
+		if (model) {
+			this.key1 = model.key1;
+			this["key 2"] = model["key 2"];
+		} else {
+			this.key1 = "value 1";
+			this["key 2"] = "value 2";
+		}
+	}
+}
+
+
+
+import { AJsonModel } from "../src/models/a-json.model";
+
+describe("a-json-model", () => {
+	describe("aJsonModel", () => {
+		it("init with undefined", () => {
+			const model = new AJsonModel();
+			expect(model).toBeDefined();
+			expect(model.key1).toBe("value 1");
+		});
+		// it("init with key1", () => {
+		// 	const value1 = "abc";
+		// 	const model = new AJsonModel({ key1: value1 });
+		// 	expect(model).toBeDefined();
+		// 	expect(model.key1).toBe(value1);
+		// });
+		// it("init with non existing key", () => {
+		// 	const nonExistingKeyName = "nonExistingKey";
+		// 	const inputModel = <any>{};
+		// 	inputModel[nonExistingKeyName] = "random";
+		// 	const model = new AJsonModel(inputModel);
+		// 	expect(model).toBeDefined();
+		// 	expect((<any>model)[nonExistingKeyName]).not.toBeDefined();
+		// });
+	});
+
+	describe("AJsonModel", () => {
+		it("should work exactly like above", () => {
+			const model = new AJsonModel();
+			expect(model).toBeDefined();
+			expect(model.key1).toBe("value 1");
+		});
+	});
+});
+--------------------CURS 4--------------------
+
+
+--------------------CURS 4--------------------
+"test:coverage": "ts-node-dev node_modules/istanbul/lib/cli.js cover -e .ts  -x \"*.d.ts\" -x \"*.spec.ts\" node_modules/jasmine/bin/jasmine.js --config=spec/support/jasmine.json",
+"istanbul": "^1.1.0-alpha.1",
+
+// a-json.route.ts
+import { Router, Request, Response, NextFunction } from "express";
+import * as aJsonService from "../services/a-json.service";
+
+export function setAJsonRoute(router: Router): Router {
+    router.get("/", getAJson);
+    return router;
+}
+
+function getAJson(_req: Request, res: Response, next: NextFunction) {
+    try {
+        const jsonData = aJsonService.getAJson();
+        return res.json(jsonData);
+    } catch (ex) {
+        return next(ex);
+    }
+}
+
+import { Router, Request, Response, NextFunction } from "express";
+import { env } from "../env";
+
+function setDiscoveryClientRoute(router: Router): Router {
+	router.get("/", getdiscoveryClient);
+
+	return router;
+}
+
+function getdiscoveryClient(_req: Request, res: Response, next: NextFunction) {
+	try {
+		const clientSettings = {
+			jsonRoute: env.A_JSON_ROUTE
+		};
+		return res.json(clientSettings);
+	} catch (ex) {
+		return next(ex);
+	}
+}
+
+export { setDiscoveryClientRoute }
+
+npm i -s mikro-orm mongodb
+npm i -D @types/mongodb
+
+	MONGO_URL: "mongodb://127.0.0.1:27017",
+	DB_NAME: "a-json-db"
+  
+  	const orm = await MikroORM.init({
+        metadataProvider: ReflectMetadataProvider,
+        cache: { enabled: false },
+        entities: entities,
+        dbName: env.DB_NAME,
+        clientUrl: env.MONGO_URL,
+        type: "mongo",
+        autoFlush: false
+	});
+  
+  
+  
+import { Entity, MongoEntity, SerializedPrimaryKey, PrimaryKey, Property } from "mikro-orm";
+import { ObjectId } from "mongodb";
+
+@Entity()
+export class AJson implements MongoEntity<AJson> {
+    @PrimaryKey()
+    _id!: ObjectId;
+
+    @SerializedPrimaryKey()
+    id!: string;
+
+    @Property()
+    key1!: string;
+
+    @Property()
+    "key 2"!: string;
+
+    constructor(model?: Partial<AJson>) {
+        if (!model || !(model instanceof Object))
+            model = <AJson><any>{};
+
+        this.key1 = model.key1 || "value 1";
+        this["key 2"] = model["key 2"] || "value 2";
+    }
+}
+
+	// make the entity manager available in request
+	app.use((req: IExpressRequest, _res: express.Response, next: express.NextFunction) => {
+		req.em = orm.em.fork();
+		next();
+	});
+  
+
+IExpressRequest
+import { Request } from "express";
+import { EntityManager } from "mikro-orm";
+
+export interface IExpressRequest extends Request {
+    em?: EntityManager;
+}
+    
+// middleware
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+
+npm i -s body-parser
+npm i -D @types/body-parser
+--------------------CURS 4--------------------
+
+
+--------------------CURS 4--------------------
+//a-json.service.ts
+import { AJson } from "../entities/a-json.entity";
+import { EntityManager } from "mikro-orm";
+
+export { getAJson, saveAJson };
+
+async function getAJson(em: EntityManager, key1: string): Promise<Error | AJson | null> {
+    if (!(em instanceof EntityManager))
+        return Error("invalid request");
+
+    if (!key1 || typeof key1 !== "string")
+        return Error("invalid params");
+
+    try {
+        const aJson = await em.findOne(AJson, { key1 });
+        return aJson;
+    } catch (ex) {
+        return ex;
+    }
+}
+
+async function saveAJson(em: EntityManager, aJson: Partial<AJson>): Promise<Error | AJson> {
+    if (!(em instanceof EntityManager))
+        return Error("invalid request");
+
+    if (!aJson || typeof aJson !== "object" || !aJson.key1)
+        return Error("invalid params");
+
+    try {
+        const aJsonExists = await em.findOne(AJson, { key1: aJson.key1 });
+        if (aJsonExists)
+            return Error("item already exists");
+    } catch (ex) {
+        return ex;
+    }
+
+    const jsonModel = new AJson({
+        key1: aJson.key1,
+        "key 2": aJson["key 2"]
+    });
+
+    try {
+        await em.persistAndFlush([jsonModel]);
+    } catch (ex) {
+        return ex;
+    }
+
+    return jsonModel;
+}
+
+
+
+
+
+
+
+import { Router, Response, NextFunction } from "express";
+import { EntityManager } from "mikro-orm";
+import { AJson } from "../entities/a-json.entity";
+import { IExpressRequest } from "../interfaces/IExpressRequest";
+import * as jsonService from "../services/a-json.service";
+
+export { setAJsonRoute };
+
+function setAJsonRoute(router: Router): Router {
+    router.get("/", getAJson);
+    router.post("/", postAJson);
+
+    return router;
+}
+
+async function getAJson(req: IExpressRequest, res: Response, next: NextFunction) {
+    if (!req.em || !(req.em instanceof EntityManager))
+        return next(Error("EntityManager not available"));
+
+    let aJson: Error | AJson | null;
+    try {
+        aJson = await jsonService.getAJson(req.em, req.query.key1 as string);
+    } catch (ex) {
+        return next(ex);
+    }
+
+    if (aJson instanceof Error)
+        return next(aJson);
+
+    if (aJson === null)
+        return res.status(404).end();
+
+    return res.json(aJson);
+}
+
+async function postAJson(req: IExpressRequest, res: Response, next: NextFunction) {
+    if (!req.em || !(req.em instanceof EntityManager))
+        return next(Error("EntityManager not available"));
+
+    let aJson: Error | AJson;
+    try {
+        aJson = await jsonService.saveAJson(req.em, req.body);
+    } catch (ex) {
+        return next(ex);
+    }
+
+    if (aJson instanceof Error)
+        return next(aJson);
+
+    return res.status(201).json(aJson);
+}
+
+
+
+
+curl -X POST -iH "Content-Type: application/json" -d "{\"key1\":\"xxxxxxxx\"}" http://localhost/api/json
+curl -i http://localhost/api/json?key1=xxxxxxxx
+--------------------CURS 4--------------------
