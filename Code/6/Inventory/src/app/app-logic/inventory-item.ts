@@ -1,4 +1,4 @@
-export interface InventoryItem {
+export interface IInventoryItem {
 	id: number;
 	name: String;
 	user: String;
@@ -10,7 +10,7 @@ export interface InventoryItem {
 	deleted: boolean;
 }
 
-export class IInventoryItem implements InventoryItem {
+export class InventoryItem implements IInventoryItem {
 
 	id: number;
 	name: String;

@@ -1,4 +1,4 @@
-export interface IInventoryItem {
+export interface IInventoryItemOld {
 	id: String;
 	owner: String;
 }

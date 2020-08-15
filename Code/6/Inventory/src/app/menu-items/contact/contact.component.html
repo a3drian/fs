@@ -8,6 +8,47 @@
 	<b>Deposit address</b>:<i>{{ dataReceived.address }}</i><br>
 </div> -->
 
-<div>
+<!-- <div>
 	<app-warehouse-detail></app-warehouse-detail>
+</div> -->
+
+<div>
+	<table mat-table [dataSource]="warehouses" matSort class="mat-elevation-z8">
+
+		<!-- ID -->
+		<ng-container matColumnDef="info">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Information </th>
+			<td mat-cell *matCellDef="let element"> {{element.info}} </td>
+		</ng-container>
+
+		<!-- Phone # -->
+		<ng-container matColumnDef="phone">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Phone # </th>
+			<td mat-cell *matCellDef="let element"> {{element.phone}} </td>
+		</ng-container>
+
+		<!-- Open Days -->
+		<ng-container matColumnDef="openDays">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Days open </th>
+			<td mat-cell *matCellDef="let element"> {{element.openDays}} </td>
+		</ng-container>
+
+		<!-- Schedule -->
+		<ng-container matColumnDef="schedule">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Schedule </th>
+			<td mat-cell *matCellDef="let element"> {{element.schedule}} </td>
+		</ng-container>
+
+		<!-- Address -->
+		<ng-container matColumnDef="address">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Address </th>
+			<td mat-cell *matCellDef="let element"> {{element.address}} </td>
+		</ng-container>
+
+		<tr mat-header-row *matHeaderRowDef="contactColumns"></tr>
+		<tr mat-row *matRowDef="let row; columns: contactColumns;"></tr>
+	</table>
+
+	<mat-paginator [pageSizeOptions]="[5, 3, 10]" showFirstLastButtons></mat-paginator>
+
 </div>

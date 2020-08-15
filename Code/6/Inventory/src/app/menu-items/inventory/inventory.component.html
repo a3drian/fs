@@ -80,7 +80,7 @@
 		<tr mat-row *matRowDef="let row; columns: inventoryColumns;"></tr>
 	</table>
 	<mat-paginator [pageSizeOptions]="[5, 3, 10]" showFirstLastButtons></mat-paginator>
-	<button mat-raised-button [disabled]="canDelete()" (click)="deleteInventoryItem()">
+	<button mat-raised-button color="accent" [disabled]="canDelete()" (click)="deleteInventoryItem()">
 		delete
 	</button>
 </div>

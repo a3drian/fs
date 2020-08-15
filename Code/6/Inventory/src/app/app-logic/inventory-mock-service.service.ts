@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 
-import { InventoryItem } from './inventory-item';
+import { IInventoryItem, InventoryItem } from './inventory-item';
 
 @Injectable({
 	providedIn: 'root'
 })
 export class InventoryMockService {
 
-	inventoryData: InventoryItem[] = [
-		{
+	inventoryData: IInventoryItem[] = [
+		new InventoryItem({
 			id: 10001,
 			name: 'PC01',
 			user: 'Johannes Kepler',
@@ -18,8 +18,8 @@ export class InventoryMockService {
 			createdAt: new Date('2019-01-01'),
 			modifiedAt: new Date('2020-02-02'),
 			deleted: false
-		},
-		{
+		}),
+		new InventoryItem({
 			id: 10002,
 			name: 'PC02',
 			user: 'Max Planck',
@@ -29,8 +29,8 @@ export class InventoryMockService {
 			createdAt: new Date('2019-01-01'),
 			modifiedAt: new Date('2020-02-03'),
 			deleted: false
-		},
-		{
+		}),
+		new InventoryItem({
 			id: 10003,
 			name: 'PC03',
 			user: 'Michael Faraday',
@@ -40,8 +40,8 @@ export class InventoryMockService {
 			createdAt: new Date('2019-01-01'),
 			modifiedAt: new Date('2020-02-03'),
 			deleted: true
-		},
-		{
+		}),
+		new InventoryItem({
 			id: 10004,
 			name: 'PC04',
 			user: 'Wolfgang Ernst Pauli',
@@ -51,8 +51,8 @@ export class InventoryMockService {
 			createdAt: new Date('2019-01-01'),
 			modifiedAt: new Date('2020-03-05'),
 			deleted: false
-		},
-		{
+		}),
+		new InventoryItem({
 			id: 10005,
 			name: 'PC05',
 			user: 'Isaac Newton',
@@ -62,8 +62,8 @@ export class InventoryMockService {
 			createdAt: new Date('2020-02-05'),
 			modifiedAt: new Date('2020-03-05'),
 			deleted: true
-		},
-		{
+		}),
+		new InventoryItem({
 			id: 10006,
 			name: 'HS01',
 			user: 'Johannes Kepler',
@@ -73,8 +73,8 @@ export class InventoryMockService {
 			createdAt: new Date('2020-01-01'),
 			modifiedAt: new Date('2020-02-02'),
 			deleted: false
-		},
-		{
+		}),
+		new InventoryItem({
 			id: 10007,
 			name: 'HS02',
 			user: 'Max Planck',
@@ -84,8 +84,8 @@ export class InventoryMockService {
 			createdAt: new Date('2020-01-01'),
 			modifiedAt: new Date('2020-02-03'),
 			deleted: false
-		},
-		{
+		}),
+		new InventoryItem({
 			id: 10008,
 			name: 'HS03',
 			user: 'Michael Faraday',
@@ -95,8 +95,8 @@ export class InventoryMockService {
 			createdAt: new Date('2020-01-01'),
 			modifiedAt: new Date('2020-02-03'),
 			deleted: true
-		},
-		{
+		}),
+		new InventoryItem({
 			id: 10009,
 			name: 'HS04',
 			user: 'Wolfgang Ernst Pauli',
@@ -106,8 +106,8 @@ export class InventoryMockService {
 			createdAt: new Date('2020-01-01'),
 			modifiedAt: new Date('2020-03-05'),
 			deleted: false
-		},
-		{
+		}),
+		new InventoryItem({
 			id: 10010,
 			name: 'HS05',
 			user: 'Isaac Newton',
@@ -117,16 +117,16 @@ export class InventoryMockService {
 			createdAt: new Date('2020-02-05'),
 			modifiedAt: new Date('2020-03-05'),
 			deleted: true
-		}
+		})
 	];
 
 	constructor() { }
 
-	getData(): InventoryItem[] {
+	getData(): IInventoryItem[] {
 		return this.inventoryData;
 	}
 
-	deleteData(toBeDeleted) {
+	deleteData(toBeDeleted: any[]): void {
 		console.log('deleteData():')
 		console.log(toBeDeleted);
 		let indexes: number[] = [];

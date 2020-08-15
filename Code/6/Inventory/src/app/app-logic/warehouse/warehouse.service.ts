@@ -9,7 +9,6 @@ import { Address } from './address.model';
 export class WarehouseService implements OnInit {
 
 	warehouses: IWarehouse[] = [
-		// <IWarehouse>{
 		new Warehouse({
 			info: 'Secure Self Storage Basildon',
 			phone: '01268 282 148',
@@ -24,7 +23,6 @@ export class WarehouseService implements OnInit {
 				postcode: 'SS14 3WN'
 			})
 		}),
-		// <IWarehouse>{
 		new Warehouse({
 			info: 'Self Storage Cambridge',
 			phone: '01223 241 184',
@@ -37,7 +35,6 @@ export class WarehouseService implements OnInit {
 				postcode: 'CB1 3JS'
 			})
 		}),
-		// <IWarehouse>{
 		new Warehouse({
 			info: 'Self Storage Dartford',
 			phone: '01322 628 203',

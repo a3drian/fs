@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, asNativeElements } from '@angular/core';
 
-import { InventoryItem } from 'src/app/app-logic/inventory-item';
+import { IInventoryItem } from 'src/app/app-logic/inventory-item';
 import { InventoryMockService } from '../../app-logic/inventory-mock-service.service';
 import { MatTableDataSource } from '@angular/material/table'
 import { MatPaginator } from '@angular/material/paginator';
@@ -38,12 +38,12 @@ export class InventoryComponent implements OnInit {
 
 	ngOnInit(): void {
 		console.log('ngOnInit(): InventoryComponent');
-		this.inventoryItems = new MatTableDataSource<InventoryItem>(this.inventoryMockService.getData());
+		this.inventoryItems = new MatTableDataSource<IInventoryItem>(this.inventoryMockService.getData());
 		this.inventoryItems.paginator = this.paginator;
 		this.inventoryItems.sort = this.sort;
 	}
 
-	selectRow(row) {
+	selectRow(row): void {
 		console.log('selectRow(row):');
 		console.log(row);
 		this.selection.toggle(row);
@@ -56,7 +56,7 @@ export class InventoryComponent implements OnInit {
 		return this.selection.isSelected(row);
 	}
 
-	masterSelectionToggle() {
+	masterSelectionToggle(): void {
 		console.log('masterSelectionToggle():');
 		console.log(this.selection.selected);
 		this.isAllItemsSelected() ?
@@ -66,11 +66,11 @@ export class InventoryComponent implements OnInit {
 			});
 	}
 
-	isMasterSelection() {
+	isMasterSelection(): boolean {
 		return this.selectionHasValue() && this.isAllItemsSelected();
 	}
 
-	isIndeterminateSelection() {
+	isIndeterminateSelection(): boolean {
 		return this.selectionHasValue() && !this.isAllItemsSelected();
 	}
 
@@ -102,14 +102,20 @@ export class InventoryComponent implements OnInit {
 		}
 	}
 
-	deleteInventoryItem() {
+	deleteInventoryItem(): void {
 		console.log('deleteInventoryItem():');
 		console.log(this.selection.selected);
 		const toBeDeleted = this.selection.selected;
 		this.inventoryMockService.deleteData(toBeDeleted);
 		this.selection.clear();
-		this.inventoryItems = new MatTableDataSource<InventoryItem>(this.inventoryMockService.getData());
+		this.reloadData();
+	}
+
+	reloadData(): void {
+		this.inventoryItems = new MatTableDataSource<IInventoryItem>(this.inventoryMockService.getData());
 		this.inventoryItems.paginator = this.paginator;
 		this.inventoryItems.sort = this.sort;
 	}
+
+	test: boolean = true;
 }
