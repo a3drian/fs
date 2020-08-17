@@ -129,16 +129,31 @@ export class InventoryMockService {
 	deleteData(toBeDeleted: any[]): void {
 		console.log('deleteData():')
 		console.log(toBeDeleted);
+
 		let indexes: number[] = [];
 		toBeDeleted.forEach(element => {
 			indexes.push(this.inventoryData.indexOf(element));
 		});
 		indexes.sort();
 		indexes.reverse();
+
 		console.log('index:' + indexes);
 		indexes.forEach(index => {
 			this.inventoryData.splice(index, 1);
 		})
+		
+		console.log(this.inventoryData);
+	}
+
+	setDataToFalse(toBeDeleted: any[]): void {
+		console.log('setDataToFalse():')
+		console.log(toBeDeleted);
+
+		toBeDeleted.forEach(element => {
+			const index = this.inventoryData.indexOf(element);
+			this.inventoryData[index].deleted = true;
+		});
+
 		console.log(this.inventoryData);
 	}
 }

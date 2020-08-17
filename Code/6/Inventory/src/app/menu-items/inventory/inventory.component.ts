@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild, asNativeElements } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { IInventoryItem } from 'src/app/app-logic/inventory-item';
 import { InventoryMockService } from '../../app-logic/inventory-mock-service.service';
-import { MatTableDataSource } from '@angular/material/table'
+import { MatTableDataSource, MatTable } from '@angular/material/table'
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
@@ -26,13 +26,16 @@ export class InventoryComponent implements OnInit {
 		'inventoryNumber',
 		'createdAt',
 		'modifiedAt',
-		'deleted'
+		'deleted',
+		// 'test',
+		'edit'
 	];
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 	@ViewChild(MatSort, { static: true }) sort: MatSort;
 	initialSelection = [];
 	allowMultiSelect: boolean = true;
 	selection = new SelectionModel<Element>(this.allowMultiSelect, this.initialSelection);
+	@ViewChild(MatTable, { static: true }) table;
 
 	constructor(private inventoryMockService: InventoryMockService) { }
 
@@ -102,20 +105,40 @@ export class InventoryComponent implements OnInit {
 		}
 	}
 
+	canEdit(): boolean {
+		if (this.selectionHasValue()) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+
+	editInventoryItem(row): void {
+		console.log('editInventoryItem():');
+		console.log(row);
+	}
+
 	deleteInventoryItem(): void {
 		console.log('deleteInventoryItem():');
 		console.log(this.selection.selected);
 		const toBeDeleted = this.selection.selected;
 		this.inventoryMockService.deleteData(toBeDeleted);
 		this.selection.clear();
-		this.reloadData();
 	}
 
-	reloadData(): void {
-		this.inventoryItems = new MatTableDataSource<IInventoryItem>(this.inventoryMockService.getData());
-		this.inventoryItems.paginator = this.paginator;
-		this.inventoryItems.sort = this.sort;
+	setInventoryItemToFalse(): void {
+		console.log('deleteInventoryItem():');
+		console.log(this.selection.selected);
+		const toBeDeleted = this.selection.selected;
+		this.inventoryMockService.setDataToFalse(toBeDeleted);
+		this.selection.clear();
 	}
 
-	test: boolean = true;
+	// reloadData(): void {
+	// 	this.inventoryItems = new MatTableDataSource<IInventoryItem>(this.inventoryMockService.getData());
+	// 	this.inventoryItems.paginator = this.paginator;
+	// 	this.inventoryItems.sort = this.sort;
+	// }
+
+	test: boolean = false;
 }

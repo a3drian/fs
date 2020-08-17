@@ -6,14 +6,16 @@ a {
 }
 a:link,
 a:visited {
-  background-color: #69f0ae;
-  color: #424242;
+  background-color: #3f51b5;
+  color: #fef5ef;
 }
 a:hover,
 a:active {
-  background-color: #424242;
-  color: #69f0ae;
+  background-color: #fef5ef;
+  color: #3f51b5;
 }
 
 /* color: #292f36; */
 /* color: #4ecdc4; */
+/* color: #3f51b5; */
+/* color: #ff4081; */

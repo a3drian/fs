@@ -1,6 +1,6 @@
-import { IInventoryItem } from './inventory-item.model';
+import { IInventoryItemOld } from './inventory-item.model';
 
-export class Phone implements IInventoryItem {
+export class Phone implements IInventoryItemOld {
 	id: String;
 	owner: String;
 	model: String;

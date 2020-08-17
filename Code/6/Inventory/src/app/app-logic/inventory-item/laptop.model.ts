@@ -1,6 +1,6 @@
-import { IInventoryItem } from './inventory-item.model';
+import { IInventoryItemOld } from './inventory-item.model';
 
-export class Laptop implements IInventoryItem {
+export class Laptop implements IInventoryItemOld {
 	id: String;
 	owner: String;
 	model: String;
