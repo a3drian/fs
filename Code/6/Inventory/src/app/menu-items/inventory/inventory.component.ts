@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 
-import { IInventoryItem } from 'src/app/app-logic/inventory-item';
+import { IInventoryItem, InventoryItem } from 'src/app/app-logic/inventory-item';
 import { InventoryMockService } from '../../app-logic/inventory-mock-service.service';
 import { MatTableDataSource, MatTable } from '@angular/material/table'
 import { MatPaginator } from '@angular/material/paginator';
@@ -105,12 +105,8 @@ export class InventoryComponent implements OnInit {
 		}
 	}
 
-	canEdit(): boolean {
-		if (this.selectionHasValue()) {
-			return false;
-		} else {
-			return true;
-		}
+	canEdit(row): boolean {
+		return this.inventoryMockService.canEdit(row);
 	}
 
 	editInventoryItem(row): void {
@@ -127,7 +123,7 @@ export class InventoryComponent implements OnInit {
 	}
 
 	setInventoryItemToFalse(): void {
-		console.log('deleteInventoryItem():');
+		console.log('setInventoryItemToFalse():');
 		console.log(this.selection.selected);
 		const toBeDeleted = this.selection.selected;
 		this.inventoryMockService.setDataToFalse(toBeDeleted);

@@ -141,7 +141,7 @@ export class InventoryMockService {
 		indexes.forEach(index => {
 			this.inventoryData.splice(index, 1);
 		})
-		
+
 		console.log(this.inventoryData);
 	}
 
@@ -155,5 +155,16 @@ export class InventoryMockService {
 		});
 
 		console.log(this.inventoryData);
+	}
+
+	canEdit(data): boolean {
+		// console.log('canEdit(data):');
+		const item: IInventoryItem = data;
+		// console.log(item);
+		if (item.deleted === true) {
+			return false;
+		} else {
+			return true;
+		}
 	}
 }

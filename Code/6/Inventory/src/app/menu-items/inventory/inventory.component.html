@@ -1,7 +1,3 @@
-<!-- <div>
-	<app-inventory-item-detail></app-inventory-item-detail>
-</div> -->
-
 <div>
 	<table mat-table [dataSource]="inventoryItems" matSort>
 
@@ -85,8 +81,8 @@
 		<ng-container matColumnDef="edit">
 			<th mat-header-cell *matHeaderCellDef> Edit </th>
 			<td mat-cell *matCellDef="let row">
-				<button mat-stroked-button color="accent" [disabled]="!checkIsRowSelected(row)"
-					(click)="editInventoryItem(row)">
+				<!-- <button mat-stroked-button color="accent" [disabled]="!checkIsRowSelected(row)" (click)="editInventoryItem(row)"> -->
+				<button *ngIf="canEdit(row)" mat-stroked-button color="accent" (click)="editInventoryItem(row)">
 					Edit
 				</button>
 			</td>
