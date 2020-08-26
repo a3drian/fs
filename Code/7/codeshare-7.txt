@@ -1,0 +1,57 @@
+<h1>Add Inventory items!</h1>
+<form [formGroup]="addItemForm" (ngSubmit)="onSubmit()">
+    <div class="form-div">
+        <label class="form-div-text">Item name:</label>
+        <input type="text" class="form-div-input" formControlName="name">
+    </div>
+    <div class="form-div">
+        <label class="form-div-text">Description:</label>
+        <textarea class="form-div-input" formControlName="descpription"></textarea>
+    </div>
+    <div class="form-div">
+        <label class="form-div-text">User:</label>
+        <input type="text" class="form-div-input" formControlName="user">
+    </div>
+    <div class="form-div">
+        <label class="form-div-text">Location:</label>
+        <input type="text" class="form-div-input" formControlName="location">
+    </div>
+    <div class="form-div">
+        <label class="form-div-text">Inventory number:</label>
+        <input type="number" class="form-div-input" formControlName="inventoryNumber">
+    </div>
+    <div class="form-div">
+        <label class="form-div-text">Created At:</label>
+        <input type="date" class="form-div-input" formControlName="createdAt">
+    </div>
+    <button type="submit" [disabled]="!addItemForm.valid">Submit</button>
+</form>
+
+<p>Form value:{{addItemForm.value |json}}</p>
+<p>Form status:{{addItemForm.status}}</p>
+
+
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+
+@Component({
+  selector: 'app-add-item',
+  templateUrl: './add-item.component.html',
+  styleUrls: ['./add-item.component.css'],
+})
+export class AddItemComponent implements OnInit {
+  addItemForm: FormGroup;
+  constructor(private fb: FormBuilder) {}
+
+  ngOnInit(): void {
+    this.addItemForm = this.fb.group({
+      name: ['', Validators.required],
+      descpription: ['', Validators.maxLength(100)],
+      user: ['', Validators.required],
+      location: ['', Validators.required],
+      inventoryNumber: ['', Validators.required],
+      createdAt: ['', Validators.required],
+    });
+  }
+  onSubmit() {}
+}

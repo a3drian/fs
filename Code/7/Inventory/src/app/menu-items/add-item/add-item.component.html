@@ -1,0 +1,145 @@
+<h1>
+	Add Inventory
+</h1>
+
+<!-- HTML basic -->
+<!--
+<form>
+	<div class="form-div">
+		<label class="form-div-text">Item name:</label>
+		<input type="text" class="form-div-input" />
+	</div>
+	<div class="form-div">
+		<label class="form-div-text">Description:</label>
+		<textarea class="form-div-input"></textarea>
+	</div>
+	<div class="form-div">
+		<label class="form-div-text">User:</label>
+		<input type="text" class="form-div-input" />
+	</div>
+	<div class="form-div">
+		<label class="form-div-text">Location:</label>
+		<input type="text" class="form-div-input" />
+	</div>
+	<div class="form-div">
+		<label class="form-div-text">Inventory number:</label>
+		<input type="number" class="form-div-input" />
+	</div>
+	<div class="form-div">
+		<label class="form-div-text">Created At:</label>
+		<input type="date" class="form-div-input" />
+	</div>
+	<button type="submit">Submit</button>
+</form>
+-->
+
+<!-- HTML complet -->
+<!--
+<form [formGroup]="addItemForm" (ngSubmit)="onSubmit()">
+	<div class="form-div">
+		<label class="form-div-text">Item name:</label>
+		<input type="text" class="form-div-input" formControlName="name" />
+	</div>
+	<div class="form-div">
+		<label class="form-div-text">Description:</label>
+		<textarea class="form-div-input" formControlName="description"></textarea>
+	</div>
+	<div class="form-div">
+		<label class="form-div-text">User:</label>
+		<input type="text" class="form-div-input" formControlName="user" />
+	</div>
+	<div class="form-div">
+		<label class="form-div-text">Location:</label>
+		<input type="text" class="form-div-input" formControlName="location" />
+	</div>
+	<div class="form-div">
+		<label class="form-div-text">Inventory number:</label>
+		<input type="number" class="form-div-input" formControlName="inventoryNumber" />
+	</div>
+	<div class="form-div">
+		<label class="form-div-text">Created At:</label>
+		<input type="date" class="form-div-input" formControlName="createdAt" />
+	</div>
+	<button type="submit" [disabled]="!addItemForm.valid">Submit</button>
+</form>
+-->
+
+<!-- Angular material -->
+<form [formGroup]="addItemForm" (ngSubmit)="onSubmit()">
+	<p>
+		<mat-form-field appearance="outline">
+			<mat-label>
+				Item name:
+			</mat-label>
+			<input matInput type="text" class="form-div-input" formControlName="name"
+				placeholder="Manufacturer name, model name..." />
+			<mat-error *ngIf="hasError('name', 'required')">
+				name required!
+			</mat-error>
+		</mat-form-field>
+	</p>
+	<p>
+		<mat-form-field appearance="outline">
+			<mat-label>
+				User:
+			</mat-label>
+			<input matInput type="text" class="form-div-input" formControlName="user" placeholder="Aditza..." />
+			<mat-error *ngIf="hasError('user', 'required')">
+				user required!
+			</mat-error>
+		</mat-form-field>
+	</p>
+	<p>
+		<mat-form-field appearance="outline">
+			<mat-label>
+				Description:
+			</mat-label>
+			<textarea matInput type="text" class="form-div-input" formControlName="description"
+				placeholder="Inventory item details..."></textarea>
+			<!-- <mat-error *ngIf="addItemForm.controls['description'].valid">
+			description cannot have more than 100 characters!
+		 </mat-error> -->
+		</mat-form-field>
+	</p>
+	<p>
+		<mat-form-field appearance="outline">
+			<mat-label>
+				Location:
+			</mat-label>
+			<input matInput type="text" class="form-div-input" formControlName="location"
+				placeholder="Location in the building, eg. floor, department..." />
+			<mat-error *ngIf="hasError('location', 'required')">
+				location required!
+			</mat-error>
+		</mat-form-field>
+	</p>
+	<p>
+		<mat-form-field appearance="outline">
+			<mat-label>
+				Inventory #:
+			</mat-label>
+			<input matInput type="text" class="form-div-input" formControlName="inventoryNumber"
+				placeholder="The number printed on the sticker..." />
+			<mat-error *ngIf="hasError('inventoryNumber', 'required')">
+				inventoryNumber required!
+			</mat-error>
+		</mat-form-field>
+	</p>
+	<p>
+		<mat-form-field appearance="outline">
+			<mat-label>
+				Created at:
+			</mat-label>
+			<input matInput type="date" class="form-div-input" formControlName="createdAt" />
+			<mat-error *ngIf="hasError('createdAt', 'required')">
+				createdAt required!
+			</mat-error>
+		</mat-form-field>
+	</p>
+	<button mat-stroked-button color="accent" type="submit" [disabled]="!addItemForm.valid">
+		Add item
+	</button>
+</form>
+
+<p>Form value:<br>{{ addItemForm.value | json }}</p>
+<p>Form status:<br>{{ addItemForm.status }}</p>

@@ -1,0 +1,14 @@
+.form-div {
+	display: grid;
+	grid-template-columns: 150px 200px;
+	grid-template-areas: "theText theInput";
+	margin-bottom: 15px;
+}
+
+.form-div-text {
+	grid-area: theText;
+}
+
+.form-div-input {
+	grid-area: theInput;
+}

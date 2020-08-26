@@ -1,0 +1,26 @@
+<!-- <p>inventory-item-detail works!</p> -->
+
+<div>
+	<ul>
+		<b>Laptops</b>
+		<hr>
+		<li *ngFor="let laptop of laptops">
+			<b>Laptop ID</b>: {{ laptop.id }}<br>
+			<b>Laptop model</b>: {{ laptop.model }}<br>
+			<b>Laptop owner</b>: {{ laptop.owner }}<br>
+			<b>Laptop S/N</b>: {{ laptop.serialNumber }}<br>
+			<hr>
+		</li>
+	</ul>
+	<ul>
+		<b>Phones</b>
+		<hr>
+		<li *ngFor="let phone of phones">
+			<b>Phone ID</b>: {{ phone.id }}<br>
+			<b>Phone model</b>: {{ phone.model }}<br>
+			<b>Phone owner</b>: {{ phone.owner }}<br>
+			<b>Phone S/N</b>: {{ phone.serialNumber }}<br>
+			<hr>
+		</li>
+	</ul>
+</div>

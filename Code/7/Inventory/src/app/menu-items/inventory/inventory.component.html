@@ -1,0 +1,104 @@
+<div>
+	<table mat-table [dataSource]="inventoryItems" matSort>
+
+		<!-- Selection checkbox -->
+		<ng-container matColumnDef="select">
+			<th mat-header-cell *matHeaderCellDef>
+				<!-- <mat-checkbox (change)="$event ? masterSelectionToggle() : null"
+					[checked]="selection.hasValue() && isAllItemsSelected()"
+					[indeterminate]="selection.hasValue() && !isAllItemsSelected()">
+				</mat-checkbox> -->
+				<mat-checkbox (change)="onMasterSelectionToggleChange($event)" [checked]="isMasterSelection()"
+					[indeterminate]="isIndeterminateSelection()">
+				</mat-checkbox>
+			</th>
+			<td mat-cell *matCellDef="let row">
+				<!-- <mat-checkbox (change)="selection.toggle(row)" [checked]="selection.isSelected(row)"></mat-checkbox> -->
+				<mat-checkbox (change)="selectRow(row)" [checked]="checkIsRowSelected(row)"></mat-checkbox>
+			</td>
+		</ng-container>
+
+		<!-- ID -->
+		<ng-container matColumnDef="id">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+			<td mat-cell *matCellDef="let element"> {{element.id}} </td>
+		</ng-container>
+
+		<!-- Name -->
+		<ng-container matColumnDef="name">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+			<td mat-cell *matCellDef="let element"> {{element.name}} </td>
+		</ng-container>
+
+		<!-- Description -->
+		<ng-container matColumnDef="description">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Description </th>
+			<td mat-cell *matCellDef="let element"> {{element.description}} </td>
+		</ng-container>
+
+		<!-- User -->
+		<ng-container matColumnDef="user">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> User </th>
+			<td mat-cell *matCellDef="let element"> {{element.user}} </td>
+		</ng-container>
+
+		<!-- Location -->
+		<ng-container matColumnDef="location">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Location </th>
+			<td mat-cell *matCellDef="let element"> {{element.location}} </td>
+		</ng-container>
+
+		<!-- Inventory Number -->
+		<ng-container matColumnDef="inventoryNumber">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Inventory # </th>
+			<td mat-cell *matCellDef="let element"> {{element.inventoryNumber}} </td>
+		</ng-container>
+
+		<!-- createdAt Date -->
+		<ng-container matColumnDef="createdAt">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Created </th>
+			<td mat-cell *matCellDef="let element"> {{element.createdAt | date }} </td>
+		</ng-container>
+
+		<!-- modifiedAt Date -->
+		<ng-container matColumnDef="modifiedAt">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Modified </th>
+			<td mat-cell *matCellDef="let element"> {{element.modifiedAt | date}} </td>
+		</ng-container>
+
+		<!-- deleted -->
+		<ng-container matColumnDef="deleted">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Deleted? </th>
+			<td mat-cell *matCellDef="let element"> {{element.deleted}} </td>
+		</ng-container>
+
+		<!-- Location -->
+		<!-- <ng-container matColumnDef="test">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Test </th>
+			<td mat-cell *matCellDef="let element"> {{element.location}} </td>
+		</ng-container> -->
+
+		<ng-container matColumnDef="edit">
+			<th mat-header-cell *matHeaderCellDef> Edit </th>
+			<td mat-cell *matCellDef="let row">
+				<!-- <button mat-stroked-button color="accent" [disabled]="!checkIsRowSelected(row)" (click)="editInventoryItem(row)"> -->
+				<button *ngIf="canEdit(row)" mat-stroked-button color="accent" (click)="editInventoryItem(row)">
+					Edit
+				</button>
+			</td>
+		</ng-container>
+
+		<ng-container>
+			<tr mat-header-row *matHeaderRowDef="inventoryColumns"></tr>
+			<tr mat-row *matRowDef="let row; columns: inventoryColumns;"></tr>
+		</ng-container>
+
+	</table>
+
+	<button mat-stroked-button color="accent" [disabled]="canDelete()" (click)="setInventoryItemToFalse()">
+		Delete
+	</button>
+
+	<mat-paginator [pageSizeOptions]="[10, 3, 5]" showFirstLastButtons></mat-paginator>
+
+</div>
