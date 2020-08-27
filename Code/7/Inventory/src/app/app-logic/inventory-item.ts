@@ -22,7 +22,7 @@ export class InventoryItem implements IInventoryItem {
 	modifiedAt: Date;
 	deleted: boolean;
 
-	// constructor({ id, name, user, location, description, inventoryNumber, createdAt, modifiedAt, deleted });
+	constructor({ id, name, user, location, description, inventoryNumber, createdAt, modifiedAt, deleted });
 	constructor(init?: Partial<IInventoryItem>);
 
 	// constructor({ id, name, user, location, description, inventoryNumber, createdAt, modifiedAt, deleted }:
@@ -48,8 +48,20 @@ export class InventoryItem implements IInventoryItem {
 	// 	this.deleted = deleted;
 	// }
 
-	constructor(init?: Partial<IInventoryItem>) {
-		Object.assign(this, init);
+	constructor(partial?: Partial<IInventoryItem>) {
+		console.log('constructor(partial?: Partial<IInventoryItem>):');
+		console.log(partial);
+
+		// const init = new InventoryItem({
+		// 	name: partial.name,
+		// 	user: partial.user,
+		// 	description: partial.description,
+		// 	location: partial.location,
+		// 	inventoryNumber: partial.inventoryNumber,
+		// 	createdAt: new Date(partial.createdAt),
+		// });
+
+		Object.assign(this, partial);
 	}
 
 }

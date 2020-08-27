@@ -1,7 +1,3 @@
-<h1>
-	Add Inventory
-</h1>
-
 <!-- HTML basic -->
 <!--
 <form>
@@ -74,7 +70,7 @@
 			<input matInput type="text" class="form-div-input" formControlName="name"
 				placeholder="Manufacturer name, model name..." />
 			<mat-error *ngIf="hasError('name', 'required')">
-				name required!
+				Item name is required!
 			</mat-error>
 		</mat-form-field>
 	</p>
@@ -83,9 +79,10 @@
 			<mat-label>
 				User:
 			</mat-label>
-			<input matInput type="text" class="form-div-input" formControlName="user" placeholder="Aditza..." />
+			<input matInput type="text" class="form-div-input" formControlName="user"
+				placeholder="Teodor-Adrian Manghiuc" />
 			<mat-error *ngIf="hasError('user', 'required')">
-				user required!
+				User name is required!
 			</mat-error>
 		</mat-form-field>
 	</p>
@@ -96,9 +93,11 @@
 			</mat-label>
 			<textarea matInput type="text" class="form-div-input" formControlName="description"
 				placeholder="Inventory item details..."></textarea>
-			<!-- <mat-error *ngIf="addItemForm.controls['description'].valid">
-			description cannot have more than 100 characters!
-		 </mat-error> -->
+			<!--
+				<mat-error *ngIf="addItemForm.controls['description'].valid">
+					description cannot have more than 100 characters!
+				</mat-error>
+			-->
 		</mat-form-field>
 	</p>
 	<p>
@@ -109,7 +108,7 @@
 			<input matInput type="text" class="form-div-input" formControlName="location"
 				placeholder="Location in the building, eg. floor, department..." />
 			<mat-error *ngIf="hasError('location', 'required')">
-				location required!
+				Location of item is required!
 			</mat-error>
 		</mat-form-field>
 	</p>
@@ -121,7 +120,7 @@
 			<input matInput type="text" class="form-div-input" formControlName="inventoryNumber"
 				placeholder="The number printed on the sticker..." />
 			<mat-error *ngIf="hasError('inventoryNumber', 'required')">
-				inventoryNumber required!
+				Inventory number is required!
 			</mat-error>
 		</mat-form-field>
 	</p>
@@ -132,7 +131,7 @@
 			</mat-label>
 			<input matInput type="date" class="form-div-input" formControlName="createdAt" />
 			<mat-error *ngIf="hasError('createdAt', 'required')">
-				createdAt required!
+				Date of creation is required!
 			</mat-error>
 		</mat-form-field>
 	</p>
@@ -140,6 +139,8 @@
 		Add item
 	</button>
 </form>
+
+<br>
 
 <p>Form value:<br>{{ addItemForm.value | json }}</p>
 <p>Form status:<br>{{ addItemForm.status }}</p>

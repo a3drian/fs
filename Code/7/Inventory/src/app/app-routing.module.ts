@@ -12,8 +12,9 @@ const routes: Routes = [
 	{ path: 'add-item', component: AddItemComponent },
 	{ path: 'contact', component: ContactComponent },
 	{ path: 'inventory', component: InventoryComponent },
-	{ path: 'scan', component: ScanComponent }
-];
+	{ path: 'edit/:id', component: AddItemComponent },
+	{ path: 'scan', component: ScanComponent },
+ ];
 
 @NgModule({
 	imports: [RouterModule.forRoot(routes)],

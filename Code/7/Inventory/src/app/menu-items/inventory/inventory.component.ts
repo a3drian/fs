@@ -28,7 +28,8 @@ export class InventoryComponent implements OnInit {
 		'modifiedAt',
 		'deleted',
 		// 'test',
-		'edit'
+		'edit',
+		'actions'
 	];
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
 	@ViewChild(MatSort, { static: true }) sort: MatSort;
