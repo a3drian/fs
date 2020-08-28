@@ -25,19 +25,25 @@ async function getInventoryItems(
 	em: EntityManager,
 	page: number,
 	limit: number,
-	activeOnly = false
+	activeOnly: boolean = false,
 ): Promise<Error | InventoryItem[]> {
 	if (!(em instanceof EntityManager)) return Error('invalid request');
 
 	try {
+		console.log('activeOnly:', activeOnly);
 		const items = await em.find(
 			InventoryItem,
-			activeOnly ? {} : { active: true },
+			activeOnly ? { active: true } : {},
+			// {},
 			{ limit: limit, offset: (page - 1) * limit }
 		);
-		console.log('getInventoryItems():');
-		console.log(items);
-		console.log('getInventoryItems()^');
+		console.log('service.ts, getInventoryItems():');
+		// console.log(items);
+		items.forEach(item => {
+			console.log(item.active);
+		});
+		console.log(items.length);
+		console.log('service.ts, getInventoryItems()^');
 		return items;
 	} catch (ex) {
 		return ex;

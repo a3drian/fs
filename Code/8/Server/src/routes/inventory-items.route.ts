@@ -22,19 +22,27 @@ async function getInventoryItems(
 	res: Response,
 	next: NextFunction
 ) {
-	if (!req.em || !(req.em instanceof EntityManager))
+	if (!req.em || !(req.em instanceof EntityManager)) {
 		return next(Error('EntityManager not available'));
+	}
+
+	console.log('route.ts, getInventoryItems():');
+	console.log('req.baseUrl:', req.baseUrl);
+	console.log('req.originalUrl:', req.originalUrl);
+	console.log('route.ts, getInventoryItems()^');
 
 	let inventoryItems: Error | InventoryItem[] | null;
 	let count = 0;
+	let active = req.query.activeOnly ? true : false;
 
 	let page = req.query.pageNumber
 		? parseInt(req.query.pageNumber.toString())
 		: 1;
-	let limit = req.query.pageSize ? parseInt(req.query.pageSize.toString()) : 5;
+	// let limit = req.query.pageSize ? parseInt(req.query.pageSize.toString()) : 5;
+	let limit = req.query.pageSize ? parseInt(req.query.pageSize.toString()) : 100;
 	try {
 		[inventoryItems, count] = await Promise.all([
-			inventoryItemService.getInventoryItems(req.em, page, limit),
+			inventoryItemService.getInventoryItems(req.em, page, limit, active),
 			inventoryItemService.countInventoryItems(req.em),
 		]);
 	} catch (ex) {

@@ -9,6 +9,7 @@ export { setAJsonRoute };
 
 function setAJsonRoute(router: Router): Router {
 	router.get('/', getAJson);
+	router.get('/:key1', getAJson);
 	router.post('/', postAJson);
 
 	return router;

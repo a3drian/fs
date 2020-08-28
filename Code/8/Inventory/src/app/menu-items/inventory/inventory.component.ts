@@ -2,10 +2,14 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { IInventoryItem, InventoryItem } from 'src/app/app-logic/inventory-item';
 import { InventoryMockService } from '../../app-logic/inventory-mock.service';
+import { InventoryListService } from '../../app-logic/inventory-list.service';
 import { MatTableDataSource, MatTable } from '@angular/material/table'
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { SelectionModel } from '@angular/cdk/collections';
+// 8:
+import { finalize, tap } from 'rxjs/operators';
+import { merge } from 'rxjs';
 
 @Component({
 	selector: 'app-inventory',
@@ -37,14 +41,55 @@ export class InventoryComponent implements OnInit {
 	allowMultiSelect: boolean = true;
 	selection = new SelectionModel<Element>(this.allowMultiSelect, this.initialSelection);
 	@ViewChild(MatTable, { static: true }) table;
+	isLoading: boolean;
 
-	constructor(private inventoryMockService: InventoryMockService) { }
+	constructor(
+		private inventoryMockService: InventoryMockService,
+		private inventoryListService: InventoryListService
+	) { }
 
 	ngOnInit(): void {
 		console.log('ngOnInit(): InventoryComponent');
-		this.inventoryItems = new MatTableDataSource<IInventoryItem>(this.inventoryMockService.getData());
-		this.inventoryItems.paginator = this.paginator;
-		this.inventoryItems.sort = this.sort;
+
+		// Inventory Mock
+		// this.inventoryItems = new MatTableDataSource<IInventoryItem>(this.inventoryMockService.getData());
+		// this.inventoryItems.paginator = this.paginator;
+		// this.inventoryItems.sort = this.sort;
+
+		// Inventory List
+		this.isLoading = true;
+		this.inventoryListService.getData()
+			.pipe(
+				finalize(() => {
+					this.isLoading = false;
+				})
+			)
+			.subscribe((data) => {
+				this.inventoryItems = data;
+			}, (error) => {
+				console.log('Table could not be filled with data:', error);
+			});
+
+		// Merge
+		merge(this.paginator.page, this.sort.sortChange)
+			.pipe(
+				tap(() => {
+					this.isLoading = true;
+					this.inventoryListService.getData()
+						.pipe(
+							finalize(() => {
+								this.isLoading = false;
+							})
+						)
+						.subscribe((data) => {
+							this.inventoryItems = data;
+						}, (error) => {
+							console.log('Table could not be filled with data', error);
+						});
+				})
+			)
+			.subscribe()
+
 	}
 
 	selectRow(row): void {

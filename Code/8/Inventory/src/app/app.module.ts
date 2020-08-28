@@ -17,10 +17,13 @@ import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatSortModule } from '@angular/material/sort';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 // buttons:
-import {MatButtonModule} from '@angular/material/button';
+import { MatButtonModule } from '@angular/material/button';
 // forms:
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatInputModule } from '@angular/material/input';
+// HTTP:
+import { HttpClientModule } from '@angular/common/http';
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 
 @NgModule({
 	declarations: [
@@ -40,7 +43,9 @@ import { MatInputModule } from '@angular/material/input';
 		MatButtonModule,
 		FormsModule,
 		ReactiveFormsModule,
-		MatInputModule
+		MatInputModule,
+		HttpClientModule,
+		MatProgressSpinnerModule
 	],
 	providers: [
 		WarehouseService,
