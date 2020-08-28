@@ -1,0 +1,570 @@
+inventory-item.route
+///////////////////////////////////////////////////////////////////////////////
+import { Router, Response, NextFunction } from 'express';
+import { EntityManager } from 'mikro-orm';
+import { InventoryItem } from '../entities/inventory-item.entity';
+import { IExpressRequest } from '../interfaces/IExpressRequest';
+import * as inventoryItemService from '../services/inventory-item.service';
+
+export { setInventoryItemRoute };
+
+function setInventoryItemRoute(router: Router): Router {
+	router.get('/', getInventoryItems);
+	router.get('/:id', getInventoryItem);
+	router.post('/', postInventoryItem);
+	router.put('/', putInventoryItem);
+	router.delete('/:id', removeInventoryItem);
+
+	return router;
+}
+
+async function getInventoryItems(
+	req: IExpressRequest,
+	res: Response,
+	next: NextFunction
+) {
+	if (!req.em || !(req.em instanceof EntityManager))
+		return next(Error('EntityManager not available'));
+
+	let inventoryItems: Error | InventoryItem[] | null;
+	let count = 0;
+
+	let page = req.query.pageNumber
+		? parseInt(req.query.pageNumber.toString())
+		: 1;
+	let limit = req.query.pageSize ? parseInt(req.query.pageSize.toString()) : 5;
+	try {
+		[inventoryItems, count] = await Promise.all([
+			inventoryItemService.getAllInventoryItems(req.em, page, limit),
+			inventoryItemService.countInventoryItems(req.em),
+		]);
+	} catch (ex) {
+		return next(ex);
+	}
+
+	if (inventoryItems instanceof Error) return next(inventoryItems);
+
+	return res.header('X-Count', count.toString()).json(inventoryItems);
+}
+
+async function getInventoryItem(
+	req: IExpressRequest,
+	res: Response,
+	next: NextFunction
+) {
+	if (!req.em || !(req.em instanceof EntityManager))
+		return next(Error('EntityManager not available'));
+
+	let inventoryItem: Error | InventoryItem | null;
+	try {
+		inventoryItem = await inventoryItemService.getInventoryItem(
+			req.em,
+			req.params.id
+		);
+	} catch (ex) {
+		return next(ex);
+	}
+
+	if (inventoryItem instanceof Error) return next(inventoryItem);
+
+	if (inventoryItem === null) return res.status(404).end();
+
+	return res.json(inventoryItem);
+}
+
+async function removeInventoryItem(
+	req: IExpressRequest,
+	res: Response,
+	next: NextFunction
+) {
+	if (!req.em || !(req.em instanceof EntityManager))
+		return next(Error('EntityManager not available'));
+
+	try {
+		await inventoryItemService.removeInventoryItem(req.em, req.params.id);
+	} catch (ex) {
+		return next(ex);
+	}
+
+	return res.status(200).end();
+}
+
+async function postInventoryItem(
+	req: IExpressRequest,
+	res: Response,
+	next: NextFunction
+) {
+	if (!req.em || !(req.em instanceof EntityManager))
+		return next(Error('EntityManager not available'));
+
+	let inventoryItem: Error | InventoryItem;
+	try {
+		inventoryItem = await inventoryItemService.addInventoryItem(
+			req.em,
+			req.body
+		);
+	} catch (ex) {
+		return next(ex);
+	}
+
+	if (inventoryItem instanceof Error) return next(inventoryItem);
+
+	return res.status(201).json(inventoryItem);
+}
+
+async function putInventoryItem(
+	req: IExpressRequest,
+	res: Response,
+	next: NextFunction
+) {
+	if (!req.em || !(req.em instanceof EntityManager))
+		return next(Error('EntityManager not available'));
+
+	let inventoryItem: Error | InventoryItem;
+	try {
+		inventoryItem = await inventoryItemService.updateInventoryItem(
+			req.em,
+			req.body
+		);
+	} catch (ex) {
+		return next(ex);
+	}
+
+	if (inventoryItem instanceof Error) return next(inventoryItem);
+
+	return res.status(200).json(inventoryItem);
+}
+
+
+inventory-item.entity
+///////////////////////////////////////////////////////////////////////////////
+import {
+  Entity,
+  MongoEntity,
+  SerializedPrimaryKey,
+  PrimaryKey,
+  Property,
+} from "mikro-orm";
+import { ObjectId } from "mongodb";
+
+@Entity()
+export class InventoryItem implements MongoEntity<InventoryItem> {
+  @PrimaryKey()
+  _id!: ObjectId;
+
+  @SerializedPrimaryKey()
+  id!: string;
+
+  @Property()
+  name: string;
+
+  @Property()
+  description: string;
+
+  @Property()
+  user: string;
+
+  @Property()
+  location: string;
+
+  @Property()
+  inventoryNumber: number;
+
+  @Property()
+  createdAt: Date;
+
+  @Property()
+  modifiedAt: Date;
+
+  @Property()
+  active: boolean;
+
+  public constructor(init?: Partial<InventoryItem>) {
+    this.createdAt = new Date();
+    Object.assign(this, init);
+  }
+}
+
+inventory-item.service
+///////////////////////////////////////////////////////////////////////////////
+import { InventoryItem } from "../entities/inventory-item.entity";
+import { EntityManager, wrap } from "mikro-orm";
+
+export {
+    getInventoryItems as getAllInventoryItems,
+    getInventoryItem,
+    updateInventoryItem,
+    addInventoryItem,
+    removeInventoryItem,
+    countInventoryItems
+};
+
+async function countInventoryItems(em: EntityManager) {
+    if (!(em instanceof EntityManager)) return Error("invalid request");
+
+    try {
+        const count = await em.count(InventoryItem, {});
+        return count;
+    } catch (ex) {
+        return ex;
+    }
+}
+
+async function getInventoryItems(
+    em: EntityManager,
+    page: number,
+    limit: number,
+    activeOnly = false
+): Promise<Error | InventoryItem[]> {
+    if (!(em instanceof EntityManager)) return Error("invalid request");
+
+    try {
+        const items = await em.find(
+            InventoryItem,
+            activeOnly ? {} : { active: true },
+            { limit: limit, offset: (page - 1) * limit }
+        );
+        return items;
+    } catch (ex) {
+        return ex;
+    }
+}
+
+async function getInventoryItem(
+    em: EntityManager,
+    id: string
+): Promise<Error | InventoryItem | null> {
+    if (!(em instanceof EntityManager)) return Error("invalid request");
+
+    if (!id || typeof id !== "string") return Error("invalid params");
+
+    try {
+        const item = await em.findOne(InventoryItem, { id: id });
+        return item;
+    } catch (ex) {
+        return ex;
+    }
+}
+
+async function removeInventoryItem(
+    em: EntityManager,
+    id: string
+): Promise<Error | void> {
+    if (!(em instanceof EntityManager)) return Error("invalid request");
+
+    if (!id || typeof id !== "string") return Error("invalid params");
+
+    try {
+        const item = await em.findOneOrFail(InventoryItem, { id });
+        await em.removeAndFlush(item);
+    } catch (ex) {
+        return ex;
+    }
+}
+
+async function updateInventoryItem(
+    em: EntityManager,
+    inventoryItem: Partial<InventoryItem>
+): Promise<Error | InventoryItem> {
+    if (!(em instanceof EntityManager)) return Error("invalid request");
+
+    if (!inventoryItem || typeof inventoryItem !== "object" || !inventoryItem.id)
+        return Error("invalid params");
+
+    try {
+        const item = await em.findOneOrFail(InventoryItem, {
+            id: inventoryItem.id,
+        });
+        wrap(item).assign(inventoryItem);
+        await em.persistAndFlush(item);
+        return item;
+    } catch (ex) {
+        return ex;
+    }
+}
+
+async function addInventoryItem(
+    em: EntityManager,
+    inventoryItem: Partial<InventoryItem>
+): Promise<Error | InventoryItem> {
+    if (!(em instanceof EntityManager)) return Error("invalid request");
+
+    if (!inventoryItem || typeof inventoryItem !== "object" || inventoryItem.id)
+        return Error("invalid params");
+
+    try {
+        const item = new InventoryItem(inventoryItem);
+        await em.persistAndFlush(item);
+        return item;
+    } catch (ex) {
+        return ex;
+    }
+}
+
+
+date
+///////////////////////////////////////////////////////////////////////////////
+[
+    {
+      "name": "PC01",
+      "user": "Johannes Kepler",
+      "description": "Dell precision PC",
+      "location": "Level 2",
+      "inventoryNumber": 20190001,
+      "createdAt": "2019-01-01",
+      "modifiedAt": "2020-02-02",
+      "active": true
+    },
+    {
+      "name": "PC02",
+      "user": "Max Planck",
+      "description": "Dell precision PC",
+      "location": "Level 2",
+      "inventoryNumber": 20190002,
+      "createdAt": "2019-01-01",
+      "modifiedAt": "2020-02-03",
+      "active": true
+    },
+    {
+      "name": "PC03",
+      "user": "Michael Faraday",
+      "description": "Dell precision PC",
+      "location": "Level 1",
+      "inventoryNumber": 20190003,
+      "createdAt": "2019-01-01",
+      "modifiedAt": "2020-02-03",
+      "active": true
+    },
+    {
+      "name": "PC04",
+      "user": "Wolfgang Ernst Pauli",
+      "description": "Dell precision PC",
+      "location": "Level 1",
+      "inventoryNumber": 20190004,
+      "createdAt": "2019-01-01",
+      "modifiedAt": "2020-03-05",
+      "active": true
+    },
+    {
+      "name": "PC05",
+      "user": "Isaac Newton",
+      "description": "Dell precision PC",
+      "location": "Level 1",
+      "inventoryNumber": 20190004,
+      "createdAt": "2020-02-05",
+      "modifiedAt": "2020-03-05",
+      "active": true
+    },
+
+    {
+      "name": "HS01",
+      "user": "Johannes Kepler",
+      "description": "Headset monoligt M1060",
+      "location": "Level 2",
+      "inventoryNumber": 20200006,
+      "createdAt": "2020-01-01",
+      "modifiedAt": "2020-02-02",
+      "active": true
+    },
+    {
+      "name": "HS02",
+      "user": "Max Planck",
+      "description": "Headset monoligt M1060",
+      "location": "Level 2",
+      "inventoryNumber": 20200007,
+      "createdAt": "2020-01-01",
+      "modifiedAt": "2020-02-03",
+      "active": true
+    },
+    {
+      "name": "HS03",
+      "user": "Michael Faraday",
+      "description": "Headset monoligt M1060",
+      "location": "Level 1",
+      "inventoryNumber": 20200008,
+      "createdAt": "2020-01-01",
+      "modifiedAt": "2020-02-03",
+      "active": true
+    },
+    {
+      "name": "HS04",
+      "user": "Wolfgang Ernst Pauli",
+      "description": "Headset monoligt M1060",
+      "location": "Level 1",
+      "inventoryNumber": 20200009,
+      "createdAt": "2020-01-01",
+      "modifiedAt": "2020-03-05",
+      "active": true
+    },
+    {
+      "name": "HS05",
+      "user": "Isaac Newton",
+      "description": "Headset monoligt M1060",
+      "location": "Level 1",
+      "inventoryNumber": 20200004,
+      "createdAt": "2020-02-05",
+      "modifiedAt": "2020-03-05",
+      "active": true
+    },
+  ];
+
+
+
+env.ts
+///////////////////////////////////////////////////////////////////////////////
+export const env = {
+	PORT: 8089,
+
+	NODE_ENV: "development",
+
+	DISCOVERY_CLIENT_ROUTE: "/discovery/client",
+	A_JSON_ROUTE: "/api/json",
+	INVENTORY_ITEM_ROUTE: "/api/inventory-items",
+
+	MONGO_URL: "mongodb://127.0.0.1:27017",
+	DB_NAME: "inventory"
+}
+
+
+proxy.json
+///////////////////////////////////////////////////////////////////////////////
+{
+  "/api": {
+    "target": "http://localhost:8080",
+    "secure": false
+  }
+}
+
+
+inventory-list.service
+///////////////////////////////////////////////////////////////////////////////
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { InventoryItem } from './inventory-item';
+import { Observable } from 'rxjs';
+import { tap, map, delay } from 'rxjs/operators';
+
+@Injectable({
+    providedIn: 'root',
+  })
+export class InventoryListService {
+    constructor(private http: HttpClient) {}
+
+    getData() {
+        return this.http.get<InventoryItem[]>('/api/inventory-items');
+    }
+}
+
+
+spinner
+///////////////////////////////////////////////////////////////////////////////
+import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
+
+<div class="spinner-container" *ngIf="isLoading">
+	<mat-spinner></mat-spinner>
+</div>
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fafafa;
+  box-shadow: 0 5px 5px -3px rgba(0, 0, 0, 0.2),
+    0 8px 10px 1px rgba(0, 0, 0, 0.14), 0 3px 14px 2px rgba(0, 0, 0, 0.12);
+}
+
+
+inventory.component
+///////////////////////////////////////////////////////////////////////////////
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { InventoryListMockService } from '../../app-logic/inventory-list-mock.service';
+import { InventoryListService } from '../../app-logic/inventory-list.service';
+import { InventoryItem } from '../../app-logic/inventory-item';
+import { SelectionModel } from '@angular/cdk/collections';
+import { finalize, tap } from 'rxjs/operators';
+import { merge } from 'rxjs';
+
+@Component({
+  selector: 'app-inventory',
+  templateUrl: './inventory.component.html',
+  styleUrls: ['./inventory.component.css'],
+})
+export class InventoryComponent implements OnInit {
+  @ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
+  @ViewChild(MatSort, { static: true }) sort: MatSort;
+
+  inventoryItems: any;
+  inventoryColumns: string[] = [
+    'select',
+    'id',
+    'name',
+    'description',
+    'user',
+    'location',
+    'inventoryNumber',
+    'createdAt',
+    'modifiedAt',
+    'deleted',
+    'actions',
+  ];
+  selection = new SelectionModel<Element>(true, []);
+  isLoading: boolean;
+
+  constructor(private inventoryListMockService: InventoryListMockService,
+              private inventoryListService: InventoryListService) {}
+
+  ngOnInit(): void {
+    // this.inventoryItems = new MatTableDataSource<InventoryItem>(
+    //   this.inventoryListMockService.getData()
+    // );
+    // this.inventoryItems.paginator = this.paginator;
+    // this.inventoryItems.sort = this.sort;
+
+    this.isLoading = true;
+    this.inventoryListService.getData()
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+        })
+      )
+      .subscribe((data) => {
+        this.inventoryItems = data;
+      }, (error) => {
+        console.log('Table could not be filled with data', error);
+      });
+
+      merge(this.paginator.page, this.sort.sortChange)
+      .pipe(
+        tap(() => {
+          this.isLoading = true;
+          this.inventoryListService.getData()
+            .pipe(
+              finalize(() => {
+                this.isLoading = false;
+              })
+            )
+            .subscribe((data) => {
+              this.inventoryItems = data;
+            }, (error) => {
+              console.log('Table could not be filled with data', error);
+            });
+        })
+      )
+      .subscribe()
+  }
+
+  isAllSelected() {
+    const numSelected = this.selection.selected.length;
+    const numRows = this.inventoryItems.data.length;
+    return numSelected === numRows;
+  }
+
+  masterToggle() {
+    this.isAllSelected()
+      ? this.selection.clear()
+      : this.inventoryItems.data.forEach((row) => this.selection.select(row));
+  }
+}
