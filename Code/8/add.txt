@@ -1,0 +1,10 @@
+For testing "Add"
+
+this.addItemForm = this.formBuilder.group({
+			name: ['Test Name', Validators.required],
+			user: ['Test User', Validators.required],
+			location: ['Test Location', Validators.required],
+			inventoryNumber: ['2', Validators.required],
+			description: ['', Validators.maxLength(100)],
+			createdAt: ['2018-06-09', Validators.required]
+		});

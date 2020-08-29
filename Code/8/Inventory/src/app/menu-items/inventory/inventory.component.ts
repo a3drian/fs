@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 
 import { IInventoryItem, InventoryItem } from 'src/app/app-logic/inventory-item';
-import { InventoryMockService } from '../../app-logic/inventory-mock.service';
+// import { InventoryMockService } from '../../app-logic/inventory-mock.service';
 import { InventoryListService } from '../../app-logic/inventory-list.service';
 import { MatTableDataSource, MatTable } from '@angular/material/table'
 import { MatPaginator } from '@angular/material/paginator';
@@ -44,7 +44,7 @@ export class InventoryComponent implements OnInit {
 	isLoading: boolean;
 
 	constructor(
-		private inventoryMockService: InventoryMockService,
+		// private inventoryMockService: InventoryMockService,
 		private inventoryListService: InventoryListService
 	) { }
 
@@ -88,7 +88,7 @@ export class InventoryComponent implements OnInit {
 						});
 				})
 			)
-			.subscribe()
+			.subscribe();
 
 	}
 
@@ -110,7 +110,7 @@ export class InventoryComponent implements OnInit {
 		console.log(this.selection.selected);
 		this.isAllItemsSelected() ?
 			this.selection.clear() :
-			this.inventoryItems.data.forEach(row => {
+			this.inventoryItems.forEach(row => {
 				this.selection.select(row);
 			});
 	}
@@ -137,10 +137,11 @@ export class InventoryComponent implements OnInit {
 	}
 
 	isAllItemsSelected(): boolean {
+		// console.log('isAllItemsSelected():');
 		const noOfSelected = this.selection.selected.length;
-		const noOfColumns = this.inventoryItems.data.length;
-		// console.log(`${noOfSelected} ${noOfColumns}`);
-		return noOfSelected === noOfColumns;
+		const noOfItems = this.inventoryItems.length;
+		// console.log(`${noOfSelected} = ${noOfItems}`);
+		return noOfSelected === noOfItems;
 	}
 
 	canDelete(): boolean {
@@ -152,7 +153,8 @@ export class InventoryComponent implements OnInit {
 	}
 
 	canEdit(row): boolean {
-		return this.inventoryMockService.canEdit(row);
+		// return this.inventoryMockService.canEdit(row);
+		return false;
 	}
 
 	editInventoryItem(row): void {
@@ -164,7 +166,7 @@ export class InventoryComponent implements OnInit {
 		console.log('deleteInventoryItem():');
 		console.log(this.selection.selected);
 		const toBeDeleted = this.selection.selected;
-		this.inventoryMockService.deleteData(toBeDeleted);
+		// this.inventoryMockService.deleteData(toBeDeleted);
 		this.selection.clear();
 	}
 
@@ -172,15 +174,10 @@ export class InventoryComponent implements OnInit {
 		console.log('setInventoryItemToFalse():');
 		console.log(this.selection.selected);
 		const toBeDeleted = this.selection.selected;
-		this.inventoryMockService.setDataToFalse(toBeDeleted);
+		// this.inventoryMockService.setDataToFalse(toBeDeleted);
+		this.inventoryListService.setDataToInactive(toBeDeleted);
 		this.selection.clear();
 	}
-
-	// reloadData(): void {
-	// 	this.inventoryItems = new MatTableDataSource<IInventoryItem>(this.inventoryMockService.getData());
-	// 	this.inventoryItems.paginator = this.paginator;
-	// 	this.inventoryItems.sort = this.sort;
-	// }
 
 	test: boolean = false;
 }

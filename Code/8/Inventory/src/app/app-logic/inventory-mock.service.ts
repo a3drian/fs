@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 
-import { IInventoryItem, InventoryItem } from './inventory-item';
+import { OldIInventoryItem, OldInventoryItem } from './inventory-item';
 
 @Injectable({
 	providedIn: 'root'
@@ -8,8 +8,8 @@ import { IInventoryItem, InventoryItem } from './inventory-item';
 export class InventoryMockService {
 
 	// /*
-	inventoryData: IInventoryItem[] = [
-		new InventoryItem({
+	inventoryData: OldInventoryItem[] = [
+		new OldInventoryItem({
 			id: 10001,
 			name: 'PC01',
 			user: 'Johannes Kepler',
@@ -20,7 +20,7 @@ export class InventoryMockService {
 			modifiedAt: new Date('2020-02-02'),
 			deleted: false
 		}),
-		new InventoryItem({
+		new OldInventoryItem({
 			id: 10002,
 			name: 'PC02',
 			user: 'Max Planck',
@@ -31,7 +31,7 @@ export class InventoryMockService {
 			modifiedAt: new Date('2020-02-03'),
 			deleted: false
 		}),
-		new InventoryItem({
+		new OldInventoryItem({
 			id: 10003,
 			name: 'PC03',
 			user: 'Michael Faraday',
@@ -40,9 +40,9 @@ export class InventoryMockService {
 			inventoryNumber: 20190003,
 			createdAt: new Date('2019-01-01'),
 			modifiedAt: new Date('2020-02-03'),
-			deleted: true
+			deleted: false
 		}),
-		new InventoryItem({
+		new OldInventoryItem({
 			id: 10004,
 			name: 'PC04',
 			user: 'Wolfgang Ernst Pauli',
@@ -53,7 +53,7 @@ export class InventoryMockService {
 			modifiedAt: new Date('2020-03-05'),
 			deleted: false
 		}),
-		new InventoryItem({
+		new OldInventoryItem({
 			id: 10005,
 			name: 'PC05',
 			user: 'Isaac Newton',
@@ -62,9 +62,9 @@ export class InventoryMockService {
 			inventoryNumber: 20190004,
 			createdAt: new Date('2020-02-05'),
 			modifiedAt: new Date('2020-03-05'),
-			deleted: true
+			deleted: false
 		}),
-		new InventoryItem({
+		new OldInventoryItem({
 			id: 10006,
 			name: 'HS01',
 			user: 'Johannes Kepler',
@@ -75,7 +75,7 @@ export class InventoryMockService {
 			modifiedAt: new Date('2020-02-02'),
 			deleted: false
 		}),
-		new InventoryItem({
+		new OldInventoryItem({
 			id: 10007,
 			name: 'HS02',
 			user: 'Max Planck',
@@ -86,7 +86,7 @@ export class InventoryMockService {
 			modifiedAt: new Date('2020-02-03'),
 			deleted: false
 		}),
-		new InventoryItem({
+		new OldInventoryItem({
 			id: 10008,
 			name: 'HS03',
 			user: 'Michael Faraday',
@@ -95,9 +95,9 @@ export class InventoryMockService {
 			inventoryNumber: 20200008,
 			createdAt: new Date('2020-01-01'),
 			modifiedAt: new Date('2020-02-03'),
-			deleted: true
+			deleted: false
 		}),
-		new InventoryItem({
+		new OldInventoryItem({
 			id: 10009,
 			name: 'HS04',
 			user: 'Wolfgang Ernst Pauli',
@@ -108,7 +108,7 @@ export class InventoryMockService {
 			modifiedAt: new Date('2020-03-05'),
 			deleted: false
 		}),
-		new InventoryItem({
+		new OldInventoryItem({
 			id: 10010,
 			name: 'HS05',
 			user: 'Isaac Newton',
@@ -117,13 +117,13 @@ export class InventoryMockService {
 			inventoryNumber: 20200004,
 			createdAt: new Date('2020-02-05'),
 			modifiedAt: new Date('2020-03-05'),
-			deleted: true
+			deleted: false
 		})
 	];
 
 	constructor() { }
 
-	getData(): IInventoryItem[] {
+	getData(): OldInventoryItem[] {
 		this.getLastId();
 		return this.inventoryData;
 	}
@@ -161,7 +161,7 @@ export class InventoryMockService {
 
 	canEdit(data): boolean {
 		// console.log('canEdit(data):');
-		const item: IInventoryItem = data;
+		const item: OldIInventoryItem = data;
 		// console.log(item);
 		if (item.deleted === true) {
 			return false;
@@ -170,7 +170,7 @@ export class InventoryMockService {
 		}
 	}
 
-	addItem(item: IInventoryItem): void {
+	addItem(item: OldIInventoryItem): void {
 		this.inventoryData.push(item);
 	}
 
@@ -196,7 +196,7 @@ export class InventoryMockService {
 		return lastId;
 	}
 
-	getItemById(id: number): IInventoryItem {
+	getItemById(id: number): OldIInventoryItem {
 		// id = 10010;
 		console.log('getItemById(id: number):');
 		console.log(`id: ${id}`);

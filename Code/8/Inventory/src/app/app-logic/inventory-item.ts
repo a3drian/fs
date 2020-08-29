@@ -1,4 +1,4 @@
-export interface IInventoryItem {
+export interface OldIInventoryItem {
 	id: number;
 	name: String;
 	user: String;
@@ -10,7 +10,7 @@ export interface IInventoryItem {
 	deleted: boolean;
 }
 
-export class InventoryItem implements IInventoryItem {
+export class OldInventoryItem implements OldIInventoryItem {
 
 	id: number;
 	name: String;
@@ -22,30 +22,62 @@ export class InventoryItem implements IInventoryItem {
 	modifiedAt: Date;
 	deleted: boolean;
 
-	// Partial
-	// constructor({ name, user, location, inventoryNumber, description, createdAt });
-	// constructor({ name, user, location, inventoryNumber, description, createdAt }:
-	// 	{
-	// 		name: String,
-	// 		user: String,
-	// 		location: String,
-	// 		description: String,
-	// 		inventoryNumber: number,
-	// 		createdAt: Date,
-	// 	}) {
-	// 	this.name = name;
-	// 	this.user = user;
-	// 	this.location = location;
-	// 	this.description = description;
-	// 	this.inventoryNumber = inventoryNumber;
-	// 	this.createdAt = new Date(createdAt);
-	// }
-
-	// Full
 	constructor({ id, name, user, location, inventoryNumber, description, createdAt, modifiedAt, deleted });
-	constructor({ id, name, user, location, description, inventoryNumber, createdAt, modifiedAt, deleted }:
+	constructor({ id, name, user, location, inventoryNumber, description, createdAt, modifiedAt, deleted }:
 		{
 			id: number,
+			name: String,
+			user: String,
+			location: String,
+			inventoryNumber: number,
+			description: String,
+			createdAt: Date,
+			modifiedAt: Date,
+			deleted: boolean
+		}) {
+		this.id = id;
+		this.name = name;
+		this.user = user;
+		this.location = location;
+		this.inventoryNumber = inventoryNumber;
+		this.description = description;
+		this.createdAt = createdAt;
+		this.modifiedAt = modifiedAt;
+		this.deleted = deleted;
+	}
+
+}
+
+export interface IInventoryItem {
+	id: String;
+	name: String;
+	user: String;
+	location: String;
+	inventoryNumber: number;
+	description: String;
+	createdAt: Date;
+	modifiedAt: Date;
+	deleted: boolean;
+	active: boolean;
+}
+
+export class InventoryItem implements IInventoryItem {
+
+	id: String;
+	name: String;
+	user: String;
+	location: String;
+	inventoryNumber: number;
+	description: String;
+	createdAt: Date;
+	modifiedAt: Date;
+	deleted: boolean;
+	active: boolean;
+
+	constructor({ id, name, user, location, inventoryNumber, description, createdAt, modifiedAt, deleted, active });
+	constructor({ id, name, user, location, description, inventoryNumber, createdAt, modifiedAt, deleted, active }:
+		{
+			id: String,
 			name: String,
 			user: String,
 			location: String,
@@ -54,6 +86,7 @@ export class InventoryItem implements IInventoryItem {
 			createdAt: Date,
 			modifiedAt: Date,
 			deleted: boolean
+			active: boolean
 		}) {
 		this.id = id;
 		this.name = name;
@@ -64,24 +97,7 @@ export class InventoryItem implements IInventoryItem {
 		this.createdAt = createdAt;
 		this.modifiedAt = modifiedAt;
 		this.deleted = deleted;
+		this.active = active;
 	}
-
-	// Partial<IInventoryItem>
-	// constructor(init?: Partial<IInventoryItem>);
-	// constructor(partial?: Partial<IInventoryItem>) {
-	// 	console.log('constructor(partial?: Partial<IInventoryItem>):');
-	// 	console.log(partial);
-
-	// 	// const init = new InventoryItem({
-	// 	// 	name: partial.name,
-	// 	// 	user: partial.user,
-	// 	// 	description: partial.description,
-	// 	// 	location: partial.location,
-	// 	// 	inventoryNumber: partial.inventoryNumber,
-	// 	// 	createdAt: new Date(partial.createdAt),
-	// 	// });
-
-	// 	Object.assign(this, partial);
-	// }
 
 }
