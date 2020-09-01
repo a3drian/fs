@@ -38,18 +38,22 @@ async function getInventoryItems(
 
 	try {
 		console.log('activeOnly:', activeOnly);
+
 		const items = await em.find(
 			InventoryItem,
 			activeOnly ? { active: true } : {},
 			{ limit: limit, offset: (page - 1) * limit }
 		);
-		console.log('service.ts, getInventoryItems():');
+
+		console.log('');
+		console.log('inventory-item.service.ts, getInventoryItems():');
 		// console.log(items);
-		items.forEach(item => {
-			console.log(item.active);
-		});
-		console.log(items.length);
-		console.log('service.ts, getInventoryItems()^');
+		// items.forEach(item => {
+		// 	console.log(item.active);
+		// });
+		console.log('items.length:', items.length);
+		console.log('inventory-item.service.ts, getInventoryItems()^');
+
 		return items;
 	} catch (ex) {
 		return ex;
@@ -68,8 +72,15 @@ async function getInventoryItem(
 		return Error('invalid params');
 	}
 
+	console.log('');
+	console.log('inventory-item.service.ts, getInventoryItem():');
+	console.log('id:', id);
+
 	try {
 		const item = await em.findOne(InventoryItem, { id: id });
+		console.log('item:', item);
+		console.log('inventory-item.service.ts, getInventoryItem()^');
+		console.log('');
 		return item;
 	} catch (ex) {
 		return ex;
@@ -104,14 +115,21 @@ async function updateInventoryItem(
 		return Error('invalid request');
 	}
 
+	console.log('');
+	console.log('inventory-item.service.ts, getInventoryItem():');
+	console.log('inventoryItem:', inventoryItem);
+	console.log('id:', inventoryItem.id);
+	console.log('');
+
 	if (!inventoryItem || typeof inventoryItem !== 'object' || !inventoryItem.id) {
 		return Error('invalid params');
 	}
 
 	try {
-		const item = await em.findOneOrFail(InventoryItem, {
-			id: inventoryItem.id,
-		});
+		const item = await em.findOneOrFail(
+			InventoryItem,
+			{ id: inventoryItem.id }
+		);
 		wrap(item).assign(inventoryItem);
 		await em.persistAndFlush(item);
 		return item;
@@ -131,10 +149,16 @@ async function addInventoryItem(
 	if (!inventoryItem || typeof inventoryItem !== 'object' || inventoryItem.id) {
 		return Error('invalid params');
 	}
-	
+
 	try {
 		const item = new InventoryItem(inventoryItem);
+
+		console.log('');
+		console.log('inventory-item.service.ts, addInventoryItem():');
 		console.log('item:', item);
+		console.log('');
+		console.log('inventory-item.service.ts, addInventoryItem()^');
+
 		await em.persistAndFlush(item);
 		return item;
 	} catch (ex) {

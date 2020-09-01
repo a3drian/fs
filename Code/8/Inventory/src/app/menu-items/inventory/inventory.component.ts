@@ -30,9 +30,10 @@ export class InventoryComponent implements OnInit {
 		'inventoryNumber',
 		'createdAt',
 		'modifiedAt',
-		'deleted',
+		// 'deleted',
+		'active',
 		// 'test',
-		'edit',
+		// 'edit',
 		'actions'
 	];
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -84,7 +85,7 @@ export class InventoryComponent implements OnInit {
 						.subscribe((data) => {
 							this.inventoryItems = data;
 						}, (error) => {
-							console.log('Table could not be filled with data', error);
+							console.log('Table could not be paged/sorted:', error);
 						});
 				})
 			)
@@ -144,7 +145,7 @@ export class InventoryComponent implements OnInit {
 		return noOfSelected === noOfItems;
 	}
 
-	canDelete(): boolean {
+	canDeleteSelection(): boolean {
 		if (this.selectionHasValue()) {
 			return false;
 		} else {
@@ -152,31 +153,56 @@ export class InventoryComponent implements OnInit {
 		}
 	}
 
-	canEdit(row): boolean {
-		// return this.inventoryMockService.canEdit(row);
-		return false;
+	canEdit(element): boolean {
+		return this.inventoryListService.canEdit(element);
 	}
 
-	editInventoryItem(row): void {
+	editInventoryItem(element): void {
 		console.log('editInventoryItem():');
-		console.log(row);
+		console.log(element);
 	}
 
-	deleteInventoryItem(): void {
-		console.log('deleteInventoryItem():');
-		console.log(this.selection.selected);
-		const toBeDeleted = this.selection.selected;
-		// this.inventoryMockService.deleteData(toBeDeleted);
-		this.selection.clear();
+	deleteInventoryItem(element): void {
+		console.log('deleteInventoryItem(element):');
+		console.log('element:', element);
+		this.inventoryListService.deleteItem(element);
+
+		this.reloadData();
 	}
 
-	setInventoryItemToFalse(): void {
+	setInactiveInventoryItem(element): void {
+		console.log('deleteInventoryItem(element):');
+		console.log('element:', element);
+		this.inventoryListService.setInactiveItem(element);
+
+		this.reloadData();
+	}
+
+	deleteSelection(): void {
+
+	}
+
+	oldSetInventoryItemToFalse(): void {
 		console.log('setInventoryItemToFalse():');
 		console.log(this.selection.selected);
 		const toBeDeleted = this.selection.selected;
 		// this.inventoryMockService.setDataToFalse(toBeDeleted);
-		this.inventoryListService.setDataToInactive(toBeDeleted);
 		this.selection.clear();
+	}
+
+	reloadData(): void {
+		// reload data
+		this.inventoryListService.getData()
+			.pipe(
+				finalize(() => {
+					this.isLoading = false;
+				})
+			)
+			.subscribe((data) => {
+				this.inventoryItems = data;
+			}, (error) => {
+				console.log('Table could not be filled with data:', error);
+			});
 	}
 
 	test: boolean = false;

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IInventoryItem, InventoryItem } from '../../app-logic/inventory-item';
-import { InventoryMockService } from '../../app-logic/inventory-mock.service';
 import { Router, ActivatedRoute } from '@angular/router';
 // 8:
 import { InventoryListService } from '../../app-logic/inventory-list.service';
@@ -16,16 +15,16 @@ export class AddItemComponent implements OnInit {
 	addItemForm: FormGroup;
 	item: any;
 	itemId: string;
+	showForm: boolean = false;
 
 	constructor(
-		private inventoryMockService: InventoryMockService,
 		private inventoryListService: InventoryListService,
 		private formBuilder: FormBuilder,
 		private router: Router,
 		private activatedRoute: ActivatedRoute
 	) {
 		this.activatedRoute.params.subscribe((params) => {
-			this.itemId = params['id'] ? params.id : 0;
+			this.itemId = params['id'] ? params.id : '0';
 		});
 	}
 
@@ -33,7 +32,7 @@ export class AddItemComponent implements OnInit {
 	displayBlankForm(): void {
 		console.log('displayEmptyForm():');
 		this.item = new InventoryItem({
-			id: 0,
+			id: '0',
 			name: '',
 			user: '',
 			location: '',
@@ -57,21 +56,51 @@ export class AddItemComponent implements OnInit {
 
 	// pre-populates the form using information from the "item" retrieved from the service
 	displayItemInForm(): void {
-		console.log('displayItemInForm():');
-		// this.item = this.inventoryMockService.getItemById(this.itemId);
-		this.item = this.inventoryListService.getDataById(this.itemId);
 
-		// this.addItemForm = this.formBuilder.group({
-		// 	name: [this.item.name, Validators.required],
-		// 	user: [this.item.user, Validators.required],
-		// 	location: [this.item.location, Validators.required],
-		// 	inventoryNumber: [this.item.inventoryNumber, Validators.required],
-		// 	description: [this.item.description, Validators.maxLength(100)],
-		// 	createdAt: [
-		// 		this.item.createdAt.toISOString().split('T')[0],
-		// 		Validators.required
-		// 	]
-		// });
+		console.log('displayItemInForm():');
+
+		this.inventoryListService.getDataById(this.itemId)
+			.subscribe(
+				(data) => {
+					console.log('displayItemInForm(), data:', data);
+					this.item =
+					{
+						id: data.id,
+						name: data.name,
+						user: data.user,
+						location: data.location,
+						inventoryNumber: data.inventoryNumber,
+						description: data.description,
+						createdAt: new Date(data.createdAt),
+						modifiedAt: new Date(),
+						deleted: data.deleted,
+						active: data.active
+					};
+					console.log('in subscribe(), this.item:', this.item);
+
+					if (this.item) {
+
+						this.showForm = true;
+
+						this.addItemForm = this.formBuilder.group({
+							name: [this.item.name, Validators.required],
+							user: [this.item.user, Validators.required],
+							location: [this.item.location, Validators.required],
+							inventoryNumber: [this.item.inventoryNumber, Validators.required],
+							description: [this.item.description, Validators.maxLength(100)],
+							createdAt: [
+								this.item.createdAt.toISOString().split('T')[0],
+								Validators.required
+							]
+						});
+
+					} else {
+						this.showForm = false;
+					}
+
+				}, (error) => {
+					console.log('(error) getDataById(id: string):', error);
+				});
 	}
 
 	ngOnInit(): void {
@@ -113,12 +142,13 @@ export class AddItemComponent implements OnInit {
 
 	editExistingItem(): void {
 		console.log('editExistingItem():');
-		this.item.name = this.addItemForm.value.name;
-		this.item.user = this.addItemForm.value.user;
-		this.item.description = this.addItemForm.value.description;
-		this.item.location = this.addItemForm.value.location;
-		this.item.inventoryNumber = this.addItemForm.value.inventoryNumber;
-		this.item.createdAt = new Date(this.addItemForm.value.createdAt);
+		const form = this.addItemForm.value;
+		this.item.name = form.name;
+		this.item.user = form.user;
+		this.item.description = form.description;
+		this.item.location = form.location;
+		this.item.inventoryNumber = form.inventoryNumber;
+		this.item.createdAt = new Date(form.createdAt);
 		this.item.modifiedAt = new Date();
 		this.router.navigate(['/inventory']);
 	}

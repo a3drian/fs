@@ -75,14 +75,14 @@ export class InventoryItem implements IInventoryItem {
 	active: boolean;
 
 	constructor({ id, name, user, location, inventoryNumber, description, createdAt, modifiedAt, deleted, active });
-	constructor({ id, name, user, location, description, inventoryNumber, createdAt, modifiedAt, deleted, active }:
+	constructor({ id, name, user, location, inventoryNumber, description, createdAt, modifiedAt, deleted, active }:
 		{
 			id: String,
 			name: String,
 			user: String,
 			location: String,
-			description: String,
 			inventoryNumber: number,
+			description: String,
 			createdAt: Date,
 			modifiedAt: Date,
 			deleted: boolean

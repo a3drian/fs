@@ -26,12 +26,12 @@ async function getInventoryItems(
 		return next(Error('EntityManager not available'));
 	}
 
-	console.log('');
-	console.log('route.ts, getInventoryItems():');
-	console.log('req.baseUrl:', req.baseUrl);
-	console.log('req.originalUrl:', req.originalUrl);
-	console.log('route.ts, getInventoryItems()^');
-	console.log('');
+	// console.log('');
+	// console.log('inventory-item.route.ts, getInventoryItems():');
+	// console.log('req.baseUrl:', req.baseUrl);
+	// console.log('req.originalUrl:', req.originalUrl);
+	// console.log('inventory-item.route.ts, getInventoryItems()^');
+	// console.log('');
 
 	let inventoryItems: Error | InventoryItem[] | null;
 	let count = 0;
@@ -68,6 +68,13 @@ async function getInventoryItem(
 		return next(Error('EntityManager not available'));
 	}
 
+	console.log('');
+	console.log('inventory-item.route.ts, getInventoryItem():');
+	console.log('req.baseUrl:', req.baseUrl);
+	console.log('req.originalUrl:', req.originalUrl);
+	console.log('inventory-item.route.ts, getInventoryItem()^');
+	console.log('');
+
 	let inventoryItem: Error | InventoryItem | null;
 	try {
 		inventoryItem = await inventoryItemService.getInventoryItem(
@@ -99,6 +106,13 @@ async function removeInventoryItem(
 		return next(Error('EntityManager not available'));
 	}
 
+	console.log('');
+	console.log('inventory-item.route.ts, removeInventoryItem():');
+	console.log('req.baseUrl:', req.baseUrl);
+	console.log('req.originalUrl:', req.originalUrl);
+	console.log('inventory-item.route.ts, removeInventoryItem()^');
+	console.log('');
+
 	try {
 		await inventoryItemService.removeInventoryItem(req.em, req.params.id);
 	} catch (ex) {
@@ -119,10 +133,10 @@ async function postInventoryItem(
 	}
 
 	console.log('');
-	console.log('route.ts, postInventoryItem():');
+	console.log('inventory-item.route.ts, postInventoryItem():');
 	console.log('req.baseUrl:', req.baseUrl);
 	console.log('req.originalUrl:', req.originalUrl);
-	console.log('route.ts, postInventoryItem()^');
+	console.log('inventory-item.route.ts, postInventoryItem()^');
 	console.log('');
 
 	let inventoryItem: Error | InventoryItem;
@@ -152,12 +166,23 @@ async function putInventoryItem(
 		return next(Error('EntityManager not available'));
 	}
 
+	console.log('');
+	console.log('inventory-item.route.ts, putInventoryItem():');
+	console.log('req.baseUrl:', req.baseUrl);
+	console.log('req.originalUrl:', req.originalUrl);
+	console.log('inventory-item.route.ts, putInventoryItem()^');
+
 	let inventoryItem: Error | InventoryItem;
 	try {
+
 		inventoryItem = await inventoryItemService.updateInventoryItem(
 			req.em,
 			req.body
 		);
+
+		console.log('inventoryItem:', inventoryItem);
+		console.log('');
+
 	} catch (ex) {
 		return next(ex);
 	}
