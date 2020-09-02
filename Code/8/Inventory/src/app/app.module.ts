@@ -5,10 +5,6 @@ import { AppRoutingModule, RoutingComponent } from './app-routing.module';
 import { AppComponent } from './app.component';
 
 import { WarehouseService } from './app-logic/warehouse/warehouse.service';
-import { WarehouseDetailComponent } from './menu-items/contact/warehouse-detail/warehouse-detail.component';
-
-import { InventoryItemService } from './app-logic/inventory-item/inventory-item.service';
-import { InventoryItemDetailComponent } from './menu-items/inventory/inventory-item-detail/inventory-item-detail.component';
 
 // material:
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -28,9 +24,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 @NgModule({
 	declarations: [
 		AppComponent,
-		RoutingComponent,
-		WarehouseDetailComponent,
-		InventoryItemDetailComponent
+		RoutingComponent
 	],
 	imports: [
 		BrowserModule,
@@ -48,8 +42,7 @@ import { MatProgressSpinnerModule } from "@angular/material/progress-spinner";
 		MatProgressSpinnerModule
 	],
 	providers: [
-		WarehouseService,
-		InventoryItemService
+		WarehouseService
 	],
 	bootstrap: [AppComponent]
 })

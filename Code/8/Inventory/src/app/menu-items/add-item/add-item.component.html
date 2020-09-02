@@ -1,5 +1,5 @@
 
-<form [hidden]="!showForm" [formGroup]="addItemForm" (ngSubmit)="onSubmit()">
+<form *ngIf="showForm" [formGroup]="addItemForm" (ngSubmit)="onSubmit()">
 	<!-- Item name -->
 	<p>
 		<mat-form-field appearance="outline">
@@ -78,7 +78,7 @@
 		</mat-form-field>
 	</p>
 	<button mat-stroked-button color="accent" type="submit" [disabled]="!addItemForm.valid">
-		Add item
+		{{buttonText}}
 	</button>
 </form>
 

@@ -1,19 +1,6 @@
-<!-- <p>contact works!</p> -->
-
-<!-- <div>
-	<b>Deposit information</b>:<i>{{ dataReceived.info }}</i><br>
-	<b>Deposit phone</b>:<i>{{ dataReceived.phone }}</i><br>
-	<b>Deposit open</b>:<i>{{ dataReceived.openDays }}</i><br>
-	<b>Deposit schedule</b>:<i>{{ dataReceived.schedule }}</i><br>
-	<b>Deposit address</b>:<i>{{ dataReceived.address }}</i><br>
-</div> -->
-
-<!-- <div>
-	<app-warehouse-detail></app-warehouse-detail>
-</div> -->
-
 <div>
-	<table mat-table [dataSource]="warehouses" matSort class="mat-elevation-z8">
+	
+	<table mat-table [dataSource]="warehouses" matSort>
 
 		<!-- ID -->
 		<ng-container matColumnDef="info">

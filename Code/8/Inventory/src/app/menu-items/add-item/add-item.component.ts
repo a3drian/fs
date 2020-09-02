@@ -16,6 +16,7 @@ export class AddItemComponent implements OnInit {
 	item: any;
 	itemId: string;
 	showForm: boolean = false;
+	buttonText: string = '';
 
 	constructor(
 		private inventoryListService: InventoryListService,
@@ -30,6 +31,9 @@ export class AddItemComponent implements OnInit {
 
 	// all the input forms are left blank
 	displayBlankForm(): void {
+
+		const today: Date = new Date();
+
 		console.log('displayEmptyForm():');
 		this.item = new InventoryItem({
 			id: '0',
@@ -50,7 +54,10 @@ export class AddItemComponent implements OnInit {
 			location: ['', Validators.required],
 			inventoryNumber: ['', Validators.required],
 			description: ['', Validators.maxLength(100)],
-			createdAt: ['', Validators.required]
+			createdAt: [
+				today.toISOString().split('T')[0],
+				Validators.required
+			]
 		});
 	}
 
@@ -110,12 +117,15 @@ export class AddItemComponent implements OnInit {
 
 		if (this.itemId == '0') {
 			inAddItemPage = true;
+			this.showForm = true;
 		}
 
 		if (inAddItemPage) {
+			this.buttonText = 'Add item';
 			this.displayBlankForm();
 		} else {
-			// face partea de initializare partiala, cand intri pe 'edit/10010', de ex.
+			// face partea de initializare partiala a formularului, cand intri pe 'edit/10010', de ex.
+			this.buttonText = 'Edit item';
 			this.displayItemInForm();
 		}
 
@@ -150,6 +160,7 @@ export class AddItemComponent implements OnInit {
 		this.item.inventoryNumber = form.inventoryNumber;
 		this.item.createdAt = new Date(form.createdAt);
 		this.item.modifiedAt = new Date();
+		this.inventoryListService.editItem(this.item);
 		this.router.navigate(['/inventory']);
 	}
 

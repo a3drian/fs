@@ -1,7 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 
-import { IInventoryItem, InventoryItem } from 'src/app/app-logic/inventory-item';
-// import { InventoryMockService } from '../../app-logic/inventory-mock.service';
 import { InventoryListService } from '../../app-logic/inventory-list.service';
 import { MatTableDataSource, MatTable } from '@angular/material/table'
 import { MatPaginator } from '@angular/material/paginator';
@@ -32,8 +30,6 @@ export class InventoryComponent implements OnInit {
 		'modifiedAt',
 		// 'deleted',
 		'active',
-		// 'test',
-		// 'edit',
 		'actions'
 	];
 	@ViewChild(MatPaginator, { static: true }) paginator: MatPaginator;
@@ -41,16 +37,15 @@ export class InventoryComponent implements OnInit {
 	initialSelection = [];
 	allowMultiSelect: boolean = true;
 	selection = new SelectionModel<Element>(this.allowMultiSelect, this.initialSelection);
-	@ViewChild(MatTable, { static: true }) table;
+	// @ViewChild(MatTable, { static: true }) table;
 	isLoading: boolean;
 
 	constructor(
-		// private inventoryMockService: InventoryMockService,
 		private inventoryListService: InventoryListService
 	) { }
 
 	ngOnInit(): void {
-		console.log('ngOnInit(): InventoryComponent');
+		console.log('InventoryComponent, ngOnInit():');
 
 		// Inventory Mock
 		// this.inventoryItems = new MatTableDataSource<IInventoryItem>(this.inventoryMockService.getData());
@@ -61,36 +56,67 @@ export class InventoryComponent implements OnInit {
 		this.isLoading = true;
 		this.inventoryListService.getData()
 			.pipe(
-				finalize(() => {
-					this.isLoading = false;
-				})
+				finalize(
+					() => {
+						this.isLoading = false;
+					}
+				)
 			)
-			.subscribe((data) => {
-				this.inventoryItems = data;
-			}, (error) => {
-				console.log('Table could not be filled with data:', error);
-			});
+			.subscribe(
+				(data) => {
+					this.inventoryItems = data;
+				},
+				(error) => {
+					console.log('Table could not be filled with data:', error);
+				}
+			);
 
 		// Merge
 		merge(this.paginator.page, this.sort.sortChange)
 			.pipe(
-				tap(() => {
-					this.isLoading = true;
-					this.inventoryListService.getData()
-						.pipe(
-							finalize(() => {
-								this.isLoading = false;
-							})
-						)
-						.subscribe((data) => {
-							this.inventoryItems = data;
-						}, (error) => {
-							console.log('Table could not be paged/sorted:', error);
-						});
-				})
+				tap(
+					() => {
+						this.isLoading = true;
+						this.inventoryListService.getData()
+							.pipe(
+								finalize(
+									() => {
+										this.isLoading = false;
+									}
+								)
+							)
+							.subscribe(
+								(data) => {
+									this.inventoryItems = data;
+								},
+								(error) => {
+									console.log('Table could not be paged/sorted:', error);
+								}
+							);
+					}
+				)
 			)
 			.subscribe();
 
+	}
+
+	filterActiveData() {
+		this.inventoryListService.getActiveData()
+			.pipe(
+				finalize(
+					() => {
+						this.isLoading = false;
+					}
+				)
+			)
+			.subscribe(
+				(data) => {
+					this.inventoryItems = data;
+				},
+				(error) => {
+					console.log('Table could not be filled with data:', error);
+				}
+			);
 	}
 
 	selectRow(row): void {
@@ -108,12 +134,14 @@ export class InventoryComponent implements OnInit {
 
 	masterSelectionToggle(): void {
 		console.log('masterSelectionToggle():');
-		console.log(this.selection.selected);
 		this.isAllItemsSelected() ?
 			this.selection.clear() :
-			this.inventoryItems.forEach(row => {
-				this.selection.select(row);
-			});
+			this.inventoryItems.forEach(
+				(row) => {
+					this.selection.select(row);
+				}
+			);
+		console.log(this.selection.selected);
 	}
 
 	isMasterSelection(): boolean {
@@ -179,7 +207,8 @@ export class InventoryComponent implements OnInit {
 	}
 
 	deleteSelection(): void {
-
+		console.log('deleteSelection():');
+		console.log(this.selection.selected);
 	}
 
 	oldSetInventoryItemToFalse(): void {
@@ -191,19 +220,22 @@ export class InventoryComponent implements OnInit {
 	}
 
 	reloadData(): void {
-		// reload data
 		this.inventoryListService.getData()
 			.pipe(
-				finalize(() => {
-					this.isLoading = false;
-				})
+				finalize(
+					() => {
+						this.isLoading = false;
+					}
+				)
 			)
-			.subscribe((data) => {
-				this.inventoryItems = data;
-			}, (error) => {
-				console.log('Table could not be filled with data:', error);
-			});
+			.subscribe(
+				(data) => {
+					this.inventoryItems = data;
+				},
+				(error) => {
+					console.log('Table could not be filled with data:', error);
+				}
+			);
 	}
 
-	test: boolean = false;
 }

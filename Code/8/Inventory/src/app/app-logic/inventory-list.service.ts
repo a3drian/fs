@@ -27,6 +27,18 @@ export class InventoryListService {
 		return request;
 	}
 
+	getActiveData() {
+		const request = this.http.get<IInventoryItem[]>(this.ACTIVEONLY_URL)
+			.pipe(
+				tap((response) => {
+					console.log('Inventory items fetched:', response);
+				}),
+				delay(100 + Math.floor(Math.random() * 900))
+			);
+		console.log('');
+		return request;
+	}
+
 	// GET/:id
 	getDataById(id: string) {
 
@@ -99,5 +111,15 @@ export class InventoryListService {
 		} else {
 			return false;
 		}
+	}
+
+	editItem(item: any): void {
+		console.log('editItem(item: any):');
+		console.log('item:', item);
+
+		const request = this.http.put<IInventoryItem>(this.BASE_URL, item)
+			.pipe()
+			.subscribe();
+		console.log('editItem(item: any)^');
 	}
 }
