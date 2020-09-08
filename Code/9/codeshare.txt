@@ -1,0 +1,661 @@
+add-item.component
+///////////////////////////////////////////////////////////////////////////////
+import { Component, OnInit } from '@angular/core';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { InventoryItem } from '../../app-logic/inventory-item';
+import { InventoryListService } from '../../app-logic/inventory-list.service';
+import { Router, ActivatedRoute } from '@angular/router';
+
+@Component({
+  selector: 'app-add-item',
+  templateUrl: './add-item.component.html',
+  styleUrls: ['./add-item.component.css'],
+})
+export class AddItemComponent implements OnInit {
+  addItemForm: FormGroup;
+  item: InventoryItem;
+  itemId: string;
+  constructor(
+    private fb: FormBuilder,
+    private inventoryListService: InventoryListService,
+    private route: Router,
+    private activatedRoute: ActivatedRoute
+  ) {
+    this.activatedRoute.params.subscribe((params) => {
+      this.itemId = params['id'];
+    });
+  }
+
+  ngOnInit(): void {
+    if (!this.itemId) {
+      this.item = new InventoryItem();
+      this.prepareForm();
+    } else {
+      this.inventoryListService.getDataById(this.itemId).subscribe((data) => {
+        this.item = new InventoryItem(data);
+        this.prepareForm();
+      });
+    }
+  }
+
+  prepareForm() {
+    this.addItemForm = this.fb.group({
+      name: [this.item.name, Validators.required],
+      description: [this.item.description, Validators.maxLength(100)],
+      user: [this.item.user, Validators.required],
+      location: [this.item.location, Validators.required],
+      inventoryNumber: [this.item.inventoryNumber, Validators.required],
+      createdAt: [
+        this.item.createdAt.toISOString().split('T')[0],
+        Validators.required,
+      ],
+    });
+  }
+
+  onSubmit() {
+    if (!this.itemId) {
+      this.item = new InventoryItem(this.addItemForm.value);
+      this.item.modifiedAt = new Date();
+      this.item.active = false;
+
+      this.inventoryListService.addData(this.item).subscribe(() => {
+        this.route.navigate(['/inventory']);
+      });
+    } else {
+      this.item.name = this.addItemForm.value.name;
+      this.item.description = this.addItemForm.value.description;
+      this.item.user = this.addItemForm.value.user;
+      this.item.location = this.addItemForm.value.location;
+      this.item.inventoryNumber = this.addItemForm.value.inventoryNumber;
+      this.item.createdAt = new Date(this.addItemForm.value.createdAt);
+      this.item.modifiedAt = new Date();
+
+      this.inventoryListService.updateData(this.item).subscribe(() => {
+        this.route.navigate(['/inventory']);
+      });
+    }
+  }
+  public hasError = (contrloName: string, errorName: string) => {
+    return this.addItemForm.controls[contrloName].hasError(errorName);
+  };
+}
+
+
+inventory-item.service
+///////////////////////////////////////////////////////////////////////////////
+import { Injectable } from '@angular/core';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { InventoryItem } from './inventory-item';
+import { Observable } from 'rxjs';
+import { tap, map, delay } from 'rxjs/operators';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class InventoryListService {
+  constructor(private http: HttpClient) {}
+
+  getData() {
+    return this.http.get<InventoryItem[]>('/api/inventory-items').pipe(
+      delay(500),
+      tap((resp) => {
+        console.log('Inventory items fetched:', resp);
+      })
+    );
+  }
+
+  getDataById(id: string) {
+    return this.http.get<InventoryItem>('/api/inventory-items/' + id);
+  }
+
+  addData(item: InventoryItem) {
+    return this.http
+      .post<InventoryItem>('/api/inventory-items/', item)
+      .pipe(tap(() => console.log('Item ', item.id, ' was created')));
+  }
+
+  updateData(item: InventoryItem) {
+    return this.http
+      .put<InventoryItem>('/api/inventory-items/' + item.id, item)
+      .pipe(tap(() => console.log('Item ', item.id, ' was updated')));
+  }
+}
+
+
+inventory-item.service (backend)
+///////////////////////////////////////////////////////////////////////////////
+import { InventoryItem } from "../entities/inventory-item.entity";
+import { EntityManager, wrap } from "mikro-orm";
+
+export {
+    getInventoryItems,
+    getInventoryItem,
+    updateInventoryItem,
+    addInventoryItem,
+    removeInventoryItem,
+    countInventoryItems
+};
+
+async function countInventoryItems(em: EntityManager) {
+    if (!(em instanceof EntityManager)) return Error("invalid request");
+
+    try {
+        const count = await em.count(InventoryItem, {});
+        return count;
+    } catch (ex) {
+        return ex;
+    }
+}
+
+async function getInventoryItems(
+    em: EntityManager,
+    page: number,
+    limit: number
+): Promise<Error | InventoryItem[]> {
+    if (!(em instanceof EntityManager)) return Error("invalid request");
+
+    try {
+        const items = await em.find(
+            InventoryItem,
+            {},
+            { limit: limit, offset: (page - 1) * limit }
+        );
+        return items;
+    } catch (ex) {
+        return ex;
+    }
+}
+
+async function getInventoryItem(
+    em: EntityManager,
+    id: string
+): Promise<Error | InventoryItem | null> {
+    if (!(em instanceof EntityManager)) return Error("invalid request");
+
+    if (!id || typeof id !== "string") return Error("invalid params");
+
+    try {
+        const item = await em.findOne(InventoryItem, { id: id });
+        return item;
+    } catch (ex) {
+        return ex;
+    }
+}
+
+async function removeInventoryItem(
+    em: EntityManager,
+    id: string
+): Promise<Error | void> {
+    if (!(em instanceof EntityManager)) return Error("invalid request");
+
+    if (!id || typeof id !== "string") return Error("invalid params");
+
+    try {
+        const item = await em.findOneOrFail(InventoryItem, { id: id });
+        await em.removeAndFlush(item);
+    } catch (ex) {
+        return ex;
+    }
+}
+
+async function updateInventoryItem(
+    em: EntityManager,
+    inventoryItem: Partial<InventoryItem>,
+    id: string
+  ): Promise<Error | InventoryItem> {
+    if (!(em instanceof EntityManager)) return Error("invalid request");
+  
+    if (
+      !inventoryItem ||
+      typeof inventoryItem !== "object" ||
+      !inventoryItem.id ||
+      id !== inventoryItem.id
+    )
+      return Error("invalid params");
+  
+    try {
+      const item = await em.findOneOrFail(InventoryItem, {
+        id: inventoryItem.id,
+      });
+      wrap(item).assign(inventoryItem);
+      await em.persistAndFlush(item);
+      return item;
+    } catch (ex) {
+      return ex;
+    }
+  }
+
+  async function addInventoryItem(
+    em: EntityManager,
+    inventoryItem: Partial<InventoryItem>
+  ): Promise<Error | InventoryItem> {
+    if (!(em instanceof EntityManager)) return Error("invalid request");
+  
+    if (!inventoryItem || typeof inventoryItem !== "object" || inventoryItem.id)
+      return Error("invalid params");
+  
+    try {
+      const item = new InventoryItem(inventoryItem);
+      await em.persistAndFlush(item);
+      return item;
+    } catch (ex) {
+      return ex;
+    }
+  }
+
+
+inventory-item.service (backend, v2)
+///////////////////////////////////////////////////////////////////////////////
+import { InventoryItem } from "../entities/inventory-item.entity";
+import { EntityManager, wrap, QueryOrder, QueryOrderMap } from "mikro-orm";
+
+export {
+  getInventoryItems as getAllInventoryItems,
+  getInventoryItem,
+  updateInventoryItem,
+  addInventoryItem,
+  removeInventoryItem,
+  countInventoryItems,
+};
+
+async function countInventoryItems(em: EntityManager, activeOnly = false) {
+  if (!(em instanceof EntityManager)) return Error("invalid request");
+
+  try {
+    const count = await em.count(
+      InventoryItem,
+      activeOnly ? { active: true } : {}
+    );
+    return count;
+  } catch (ex) {
+    return ex;
+  }
+}
+
+async function getInventoryItems(
+  em: EntityManager,
+  page: number,
+  limit: number,
+  sort = "",
+  activeOnly = false
+): Promise<Error | InventoryItem[]> {
+  if (!(em instanceof EntityManager)) return Error("invalid request");
+
+  let sorting: QueryOrderMap = {};
+  if (sort) {
+    const sortParams = sort.split("_");
+    const column = sortParams[0];
+    const order = sortParams[1];
+    if (column && order) {
+      sorting[column] = order === "desc" ? QueryOrder.DESC : QueryOrder.ASC;
+    } else {
+      return Error("invalid params");
+    }
+  }
+
+  try {
+    const items = await em.find(
+      InventoryItem,
+      activeOnly ? { active: true } : { },
+      {
+        orderBy: sorting,
+        limit: limit,
+        offset: (page - 1) * limit,
+      }
+    );
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    return items;
+  } catch (ex) {
+    return ex;
+  }
+}
+
+async function getInventoryItem(
+  em: EntityManager,
+  id: string
+): Promise<Error | InventoryItem | null> {
+  if (!(em instanceof EntityManager)) return Error("invalid request");
+
+  if (!id || typeof id !== "string") return Error("invalid params");
+
+  try {
+    const item = await em.findOne(InventoryItem, { id: id });
+    return item;
+  } catch (ex) {
+    return ex;
+  }
+}
+
+async function removeInventoryItem(
+  em: EntityManager,
+  id: string
+): Promise<Error | void> {
+  if (!(em instanceof EntityManager)) return Error("invalid request");
+
+  if (!id || typeof id !== "string") return Error("invalid params");
+
+  try {
+    const item = await em.findOneOrFail(InventoryItem, { id });
+    await em.removeAndFlush(item);
+  } catch (ex) {
+    return ex;
+  }
+}
+
+async function updateInventoryItem(
+  em: EntityManager,
+  inventoryItem: Partial<InventoryItem>,
+  id: string
+): Promise<Error | InventoryItem> {
+  if (!(em instanceof EntityManager)) return Error("invalid request");
+
+  if (
+    !inventoryItem ||
+    typeof inventoryItem !== "object" ||
+    !inventoryItem.id ||
+    id !== inventoryItem.id
+  )
+    return Error("invalid params");
+
+  try {
+    const item = await em.findOneOrFail(InventoryItem, {
+      id: inventoryItem.id,
+    });
+    wrap(item).assign(inventoryItem);
+    await em.persistAndFlush(item);
+    return item;
+  } catch (ex) {
+    return ex;
+  }
+}
+
+async function addInventoryItem(
+  em: EntityManager,
+  inventoryItem: Partial<InventoryItem>
+): Promise<Error | InventoryItem> {
+  if (!(em instanceof EntityManager)) return Error("invalid request");
+
+  if (!inventoryItem || typeof inventoryItem !== "object" || inventoryItem.id)
+    return Error("invalid params");
+
+  try {
+    const item = new InventoryItem(inventoryItem);
+    await em.persistAndFlush(item);
+    return item;
+  } catch (ex) {
+    return ex;
+  }
+}
+
+
+
+inventory-item.route (backend)
+///////////////////////////////////////////////////////////////////////////////
+import { Router, Response, NextFunction } from "express";
+import { EntityManager } from "mikro-orm";
+import { InventoryItem } from "../entities/inventory-item.entity";
+import { IExpressRequest } from "../interfaces/IExpressRequest";
+import * as inventoryItemService from "../services/inventory-item.service";
+
+export { setInventoryItemRoute };
+
+function setInventoryItemRoute(router: Router): Router {
+  router.get("/", getInventoryItems);
+  router.get("/:id", getInventoryItem);
+  router.post("/", postInventoryItem);
+  router.put("/:id", putInventoryItem);
+  router.delete("/:id", removeInventoryItem);
+
+  return router;
+}
+
+async function getInventoryItems(
+  req: IExpressRequest,
+  res: Response,
+  next: NextFunction
+) {
+  if (!req.em || !(req.em instanceof EntityManager))
+    return next(Error("EntityManager not available"));
+
+  let inventoryItems: Error | InventoryItem[] | null;
+  let count = 0;
+
+  let page = req.query.pageNumber
+    ? parseInt(req.query.pageNumber.toString())
+    : 1;
+  let limit = req.query.pageSize ? parseInt(req.query.pageSize.toString()) : 50;
+  try {
+    [inventoryItems, count] = await Promise.all([
+      inventoryItemService.getInventoryItems(req.em, page, limit),
+      inventoryItemService.countInventoryItems(req.em),
+    ]);
+  } catch (ex) {
+    return next(ex);
+  }
+
+  if (inventoryItems instanceof Error) return next(inventoryItems);
+
+  return res.header("X-Count", count.toString()).json(inventoryItems);
+}
+
+async function getInventoryItem(
+  req: IExpressRequest,
+  res: Response,
+  next: NextFunction
+) {
+  if (!req.em || !(req.em instanceof EntityManager))
+    return next(Error("EntityManager not available"));
+
+  let inventoryItem: Error | InventoryItem | null;
+  try {
+    inventoryItem = await inventoryItemService.getInventoryItem(
+      req.em,
+      req.params.id
+    );
+  } catch (ex) {
+    return next(ex);
+  }
+
+  if (inventoryItem instanceof Error) return next(inventoryItem);
+
+  if (inventoryItem === null) return res.status(404).end();
+
+  return res.json(inventoryItem);
+}
+
+async function removeInventoryItem(
+  req: IExpressRequest,
+  res: Response,
+  next: NextFunction
+) {
+  if (!req.em || !(req.em instanceof EntityManager))
+    return next(Error("EntityManager not available"));
+
+  try {
+    await inventoryItemService.removeInventoryItem(req.em, req.params.id);
+  } catch (ex) {
+    return next(ex);
+  }
+
+  return res.status(200).end();
+}
+
+async function postInventoryItem(
+  req: IExpressRequest,
+  res: Response,
+  next: NextFunction
+) {
+  if (!req.em || !(req.em instanceof EntityManager))
+    return next(Error("EntityManager not available"));
+
+  let inventoryItem: Error | InventoryItem;
+  try {
+    inventoryItem = await inventoryItemService.addInventoryItem(
+      req.em,
+      req.body
+    );
+  } catch (ex) {
+    return next(ex);
+  }
+
+  if (inventoryItem instanceof Error) return next(inventoryItem);
+
+  return res.status(201).json(inventoryItem);
+}
+async function putInventoryItem(
+  req: IExpressRequest,
+  res: Response,
+  next: NextFunction
+) {
+  if (!req.em || !(req.em instanceof EntityManager))
+    return next(Error("EntityManager not available"));
+
+  let inventoryItem: Error | InventoryItem;
+  try {
+    inventoryItem = await inventoryItemService.updateInventoryItem(
+      req.em,
+      req.body,
+      req.params.id
+    );
+  } catch (ex) {
+    return next(ex);
+  }
+
+  if (inventoryItem instanceof Error) return next(inventoryItem);
+
+  return res.status(200).json(inventoryItem);
+}
+
+
+getInventoryItems() din route (backend)
+///////////////////////////////////////////////////////////////////////////////
+async function getInventoryItems(
+  req: IExpressRequest,
+  res: Response,
+  next: NextFunction
+) {
+  if (!req.em || !(req.em instanceof EntityManager))
+    return next(Error("EntityManager not available"));
+
+  let inventoryItems: Error | InventoryItem[] | null;
+  let count = 0;
+
+  let page = req.query.pageNumber
+    ? parseInt(req.query.pageNumber.toString())
+    : 1;
+  
+  let limit = req.query.pageSize ? parseInt(req.query.pageSize.toString()) : 5;
+
+  try {
+    [inventoryItems, count] = await Promise.all([
+      inventoryItemService.getAllInventoryItems(req.em, page, limit, req.query.sort ? req.query.sort.toString() : '', req.query.activeOnly === 'true'),
+      inventoryItemService.countInventoryItems(req.em, req.query.activeOnly === 'true'),
+    ]);
+  } catch (ex) {
+    return next(ex);
+  }
+
+  if (inventoryItems instanceof Error) return next(inventoryItems);
+
+  return res.header("X-Count", count.toString()).json(inventoryItems);
+}
+
+
+inventory-list.service (frontend)
+///////////////////////////////////////////////////////////////////////////////
+getData(pageNumber = 1, pageSize = 5, activeOnly = false, sorting = ''): Observable<[InventoryItem[], number]> {
+		let params = new HttpParams()
+			.set('activeOnly', activeOnly ? 'true' : 'false')
+			.set('pageNumber', pageNumber.toString())
+			.set('pageSize', pageSize.toString())
+		if (sorting) params = params.set('sort', sorting);
+
+		return this.http
+			.get<InventoryItem[]>('/api/inventory-items', {
+				params: params,
+				observe: 'response'
+			})
+			.pipe(
+				tap((resp) => {
+					console.log('Inventory items fetched', resp.body);
+				}),
+				map((resp) => {
+					return [resp.body, parseInt(resp.headers.get('X-Count'))];
+				})
+			);
+	}
+
+
+inventory.component.ts (frontend)
+///////////////////////////////////////////////////////////////////////////////
+	private fetchData() {
+		this.isLoading = true;
+		this.inventoryListService
+		  .getData(
+			 this.paginator.pageIndex + 1,
+			 this.paginator.pageSize,
+			 this.activeOnly,
+			 this.sort.active
+				? `${this.sort.active}_${this.sort.direction ? this.sort.direction : 'asc'}`
+				: ''
+		  )
+		  .pipe(
+			 finalize(() => {
+				this.isLoading = false;
+			 })
+		  )
+		  .subscribe(
+			 (data) => {
+				this.inventoryItems = data[0];
+				this.itemsCount = data[1];
+			 },
+			 (error) => {
+				console.log('Table could not be filled with data', error);
+			 }
+		  );
+	 }
+
+
+toggle button
+///////////////////////////////////////////////////////////////////////////////
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatToolbarModule } from '@angular/material/toolbar'
+
+
+  <mat-toolbar>
+    <mat-toolbar-row>
+        <mat-slide-toggle [(ngModel)]="activeOnly">
+            Active Only
+          </mat-slide-toggle>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  
+
+switch map
+///////////////////////////////////////////////////////////////////////////////
+  merge(this.paginator.page, this.sort.sortChange, this.activeOnly$)
+      .pipe(
+        switchMap(() => {
+          this.isLoading = true;
+          return this.inventoryListService
+            .getData(
+              this.paginator.pageIndex + 1,
+              this.paginator.pageSize,
+              this.activeOnly,
+              this.sort.active
+                ? `${this.sort.active}_${this.sort.direction ? this.sort.direction : 'asc'}`
+                : ''
+            )
+        })
+      )
+      .subscribe(
+        (data) => {
+          this.inventoryItems = data[0];
+          this.itemsCount = data[1];
+          this.isLoading = false;
+        },
+        (error) => {
+          console.log('Table could not be filled with data', error);
+          this.isLoading = false;
+        }
+      );

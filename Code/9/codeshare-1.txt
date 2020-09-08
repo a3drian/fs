@@ -1,0 +1,90 @@
+getData(pageNumber = 1, pageSize = 5, activeOnly = false, sorting = ''): Observable<[InventoryItem[], number]> {
+    let params = new HttpParams()
+      .set('activeOnly', activeOnly ? 'true' : 'false')
+      .set('pageNumber', pageNumber.toString())
+      .set('pageSize', pageSize.toString())
+    if (sorting) params = params.set('sort', sorting);
+
+    return this.http
+      .get<InventoryItem[]>('/api/inventory-items', {
+        params: params,
+        observe: 'response'
+      })
+      .pipe(
+        tap((resp) => {
+          console.log('Inventory items fetched', resp.body);
+        }),
+        map((resp) => {
+          return [resp.body, parseInt(resp.headers.get('X-Count'))];
+        })
+      );
+  }
+}
+
+
+  private fetchData() {
+    this.isLoading = true;
+    this.inventoryListService
+      .getData(
+        this.paginator.pageIndex + 1,
+        this.paginator.pageSize,
+        this.activeOnly,
+        this.sort.active
+          ? `${this.sort.active}_${this.sort.direction ? this.sort.direction : 'asc'}`
+          : ''
+      )
+      .pipe(
+        finalize(() => {
+          this.isLoading = false;
+        })
+      )
+      .subscribe(
+        (data) => {
+          this.inventoryItems = data[0];
+          this.itemsCount = data[1];
+        },
+        (error) => {
+          console.log('Table could not be filled with data', error);
+        }
+      );
+  }
+  
+  
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatToolbarModule } from '@angular/material/toolbar'
+
+
+  <mat-toolbar>
+    <mat-toolbar-row>
+        <mat-slide-toggle [(ngModel)]="activeOnly">
+            Active Only
+          </mat-slide-toggle>
+    </mat-toolbar-row>
+  </mat-toolbar>
+  
+  merge(this.paginator.page, this.sort.sortChange, this.activeOnly$)
+      .pipe(
+        switchMap(() => {
+          this.isLoading = true;
+          return this.inventoryListService
+            .getData(
+              this.paginator.pageIndex + 1,
+              this.paginator.pageSize,
+              this.activeOnly,
+              this.sort.active
+                ? `${this.sort.active}_${this.sort.direction ? this.sort.direction : 'asc'}`
+                : ''
+            )
+        })
+      )
+      .subscribe(
+        (data) => {
+          this.inventoryItems = data[0];
+          this.itemsCount = data[1];
+          this.isLoading = false;
+        },
+        (error) => {
+          console.log('Table could not be filled with data', error);
+          this.isLoading = false;
+        }
+      );

@@ -1,0 +1,42 @@
+table {
+  width: 100%;
+  background-color: #fef5ef;
+}
+
+.progress-bar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fef5ef;
+  height: 30px;
+}
+
+.progress-bar {
+  width: 99%;
+}
+
+.toggle-toolbar {
+  background-color: #fef5ef;
+}
+
+/*
+.mat-column-id {
+	flex: none;
+	width: 20%;
+}
+*/
+
+.button {
+  margin: 5px;
+}
+
+th {
+  font-size: 16px;
+}
+
+.red {
+  color: #ff4081;
+}
+.green {
+  color: #3f51b5;
+}
