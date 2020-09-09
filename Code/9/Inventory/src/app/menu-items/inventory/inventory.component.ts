@@ -178,7 +178,8 @@ export class InventoryComponent implements OnInit {
 			.deleteItem(element)
 			.subscribe(
 				() => {
-
+					this.activeOnly;
+					console.log('deleteInventoryItem(element)^');
 				}
 			);
 	}
@@ -213,7 +214,7 @@ export class InventoryComponent implements OnInit {
 			.setInactiveItem(element)
 			.subscribe(
 				() => {
-
+					
 				}
 			);
 	}

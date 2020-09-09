@@ -14,7 +14,7 @@ import { InventoryListService } from '../../app-logic/inventory-list.service';
 export class AddItemComponent implements OnInit {
 
 	addItemForm: FormGroup;
-	item: any;
+	item: InventoryItem;
 	itemId: string;
 	showForm = false;
 	buttonText = '';
@@ -134,17 +134,19 @@ export class AddItemComponent implements OnInit {
 	addNewItem(): void {
 		console.log('addNewItem():');
 		const form = this.addItemForm.value;
-		this.item =
-		{
-			name: form.name,
-			user: form.user,
-			location: form.location,
-			inventoryNumber: form.inventoryNumber,
-			description: form.description,
-			createdAt: new Date(form.createdAt),
-			modifiedAt: new Date(),
-			active: true
-		};
+		this.item = new InventoryItem(
+			{
+				id: '',
+				name: form.name,
+				user: form.user,
+				location: form.location,
+				inventoryNumber: form.inventoryNumber,
+				description: form.description,
+				createdAt: new Date(form.createdAt),
+				modifiedAt: new Date(),
+				active: true
+			}
+		);
 		this.inventoryListService
 			.addItem(this.item)
 			.subscribe(

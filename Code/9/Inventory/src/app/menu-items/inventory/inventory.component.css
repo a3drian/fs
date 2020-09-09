@@ -1,3 +1,10 @@
+h1,
+div {
+  color: #3f51b5;
+  padding-top: 30px;
+  padding-left: 30px;
+}
+
 table {
   width: 100%;
   background-color: #fef5ef;
@@ -8,11 +15,11 @@ table {
   justify-content: center;
   align-items: center;
   background-color: #fef5ef;
-  height: 30px;
+  height: 20px;
 }
 
 .progress-bar {
-  width: 99%;
+  width: 98%;
 }
 
 .toggle-toolbar {
@@ -39,4 +46,8 @@ th {
 }
 .green {
   color: #3f51b5;
+}
+
+.mat-paginator {
+  background-color: #fef5ef;
 }

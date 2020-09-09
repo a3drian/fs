@@ -17,6 +17,8 @@ import { IExpressRequest } from './interfaces/IExpressRequest';
 import * as bodyParser from 'body-parser';
 // 8:
 import { setInventoryItemRoute } from './routes/inventory-items.route';
+// 9:
+import { setWarehouseRoute } from './routes/warehouses.route';
 
 let app: Application;
 
@@ -25,7 +27,7 @@ async function makeApp(): Promise<Application> {
 
 	app = express();
 	app.use(cors());
-	
+
 	app.use(express.static('build'));
 
 	const orm = await MikroORM.init<MongoDriver>({
@@ -57,6 +59,7 @@ async function makeApp(): Promise<Application> {
 	app.use(env.DISCOVERY_CLIENT_ROUTE, setDiscoveryClientRoute(Router()));
 	app.use(env.A_JSON_ROUTE, setAJsonRoute(Router()));
 	app.use(env.INVENTORY_ITEMS_ROUTE, setInventoryItemRoute(Router()));
+	app.use(env.WAREHOUSES_ROUTE, setWarehouseRoute(Router()));
 
 	// 404
 	app.use((_req: Request, _res: Response, next: NextFunction) => {

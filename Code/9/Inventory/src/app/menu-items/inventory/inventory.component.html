@@ -1,7 +1,6 @@
-<div class="progress-bar-container">
-	<mat-progress-bar class="progress-bar" *ngIf="isLoading" mode="indeterminate">
-	</mat-progress-bar>
-</div>
+<h1>
+	Inventory
+</h1>
 
 <div>
 
@@ -12,6 +11,11 @@
 			</mat-slide-toggle>
 		</mat-toolbar-row>
 	</mat-toolbar>
+
+	<div class="progress-bar-container">
+		<mat-progress-bar class="progress-bar" *ngIf="isLoading" mode="indeterminate">
+		</mat-progress-bar>
+	</div>
 
 	<table mat-table [dataSource]="inventoryItems" matSort>
 
@@ -113,7 +117,7 @@
 
 	</table>
 
-	<mat-paginator [length]="itemsCount" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+	<mat-paginator class="mat-paginator" [length]="itemsCount" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
 	</mat-paginator>
 
 	<button class="button" mat-stroked-button color="accent" [disabled]="canDeleteSelection()"

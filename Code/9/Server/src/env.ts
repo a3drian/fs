@@ -13,5 +13,6 @@ export const env = Object.freeze({
 
 	DISCOVERY_CLIENT_ROUTE: '/discovery/client',
 	A_JSON_ROUTE: '/api/json',
-	INVENTORY_ITEMS_ROUTE: '/api/inventory-items'
+	INVENTORY_ITEMS_ROUTE: '/api/inventory-items',
+	WAREHOUSES_ROUTE: '/api/warehouses'
 });

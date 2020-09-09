@@ -1,0 +1,129 @@
+[{
+        "info": "Self Storage Basildon",
+        "phone": "01268 282 148",
+        "openDays": "7 days a week",
+        "schedule": "24hrs",
+        "active": true,
+        "address": {
+            "line1": "Unit 1, Festival Leisure Park",
+            "line2": "Carnival Close",
+            "town": "Basildon",
+            "county": "Essex",
+            "postcode": "SS14 3WN"
+        }
+    }, {
+        "info": "Self Storage Cambridge",
+        "phone": "01223 241 184",
+        "openDays": "7 days a week",
+        "schedule": "24hrs",
+        "active": true,
+        "address": {
+            "line1": "505 Coldhams Lane",
+            "town": "Cambridge",
+            "county": "Cambridgeshire",
+            "postcode": "CB1 3JS"
+        }
+    }, {
+        "info": "Self Storage Dartford",
+        "phone": "01322 628 203",
+        "openDays": "7 days a week",
+        "schedule": "24hrs",
+        "active": true,
+        "address": {
+            "line1": "599-613 Princes Road",
+            "town": "Dartford",
+            "county": "Kent",
+            "postcode": "DA2 6HH"
+        }
+    }, {
+        "info": "Self Storage Aylesford and Maidstone",
+        "phone": "01622 715 398",
+        "openDays": "7 days a week",
+        "schedule": "24hrs",
+        "active": true,
+        "address": {
+            "line1": "Units 2&3",
+            "line2": "3 Bellingham Way",
+            "town": "Aylesford",
+            "county": "Kent",
+            "postcode": "ME20 7HP"
+        }
+    }, {
+        "info": "Self Storage Bradford",
+        "phone": "01234 346 418",
+        "openDays": "7 days a week",
+        "schedule": "24hrs",
+        "active": true,
+        "address": {
+            "line1": "Unit 2",
+            "line2": "Caxton Road",
+            "town": "Bedford",
+            "county": "Bedford",
+            "postcode": "MK41 0LF"
+        }
+    }, {
+        "info": "Self Storage Gloucester",
+        "phone": "01452 502 666",
+        "openDays": "7 days a week",
+        "schedule": "24hrs",
+        "active": true,
+        "address": {
+            "line1": "3 Barnwood Point",
+            "line2": "Corinium Avenue",
+            "town": "Gloucester",
+            "county": "Gloucestershire",
+            "postcode": "GL4 3HX"
+        }
+    }, {
+        "info": "Self Storage Wycombe Central",
+        "phone": "01494 449 528",
+        "openDays": "7 days a week",
+        "schedule": "24hrs",
+        "active": true,
+        "address": {
+            "line1": "Albany House",
+            "line2": "Leigh Street",
+            "town": "High Wycombe",
+            "county": "Buckinghamshire",
+            "postcode": "HP11 2QU"
+        }
+    }, {
+        "info": "Self Storage West Bromwich",
+        "phone": "0121 580 0100",
+        "openDays": "7 days a week",
+        "schedule": "24hrs",
+        "active": true,
+        "address": {
+            "line1": "133 Birmingham Road",
+            "town": "West Bromwich",
+            "county": "Birmingham",
+            "postcode": "B71 4JZ"
+        }
+    }, {
+        "info": "Self Storage Dunstable & Luton",
+        "phone": "01582 861 472",
+        "openDays": "7 days a week",
+        "schedule": "24hrs",
+        "active": true,
+        "address": {
+            "line1": "Nimbus Park",
+            "line2": "Unit 1, Porz Avenue",
+            "town": "Dunstable",
+            "county": "Bedfordshire",
+            "postcode": "LU5 5WZ"
+        }
+    }, {
+        "info": "Self Storage Walsall",
+        "phone": "0121 526 3999",
+        "openDays": "7 days a week",
+        "schedule": "24hrs",
+        "active": true,
+        "address": {
+            "line1": "Station Street",
+            "line2": "Darlaston",
+            "town": "Walsall",
+            "county": "West Midlands",
+            "postcode": "WS10 8BW"
+        }
+    }
+]

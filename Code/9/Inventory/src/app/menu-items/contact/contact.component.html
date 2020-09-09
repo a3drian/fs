@@ -1,5 +1,22 @@
+<h1>
+	Contact
+</h1>
+
 <div>
-	
+
+	<mat-toolbar class="toggle-toolbar">
+		<mat-toolbar-row>
+			<mat-slide-toggle [(ngModel)]="activeOnly">
+				{{ activeOnly ? 'Active data only' : 'All data' }}
+			</mat-slide-toggle>
+		</mat-toolbar-row>
+	</mat-toolbar>
+
+	<div class="progress-bar-container">
+		<mat-progress-bar class="progress-bar" *ngIf="isLoading" mode="indeterminate">
+		</mat-progress-bar>
+	</div>
+
 	<table mat-table [dataSource]="warehouses" matSort>
 
 		<!-- ID -->
@@ -29,13 +46,43 @@
 		<!-- Address -->
 		<ng-container matColumnDef="address">
 			<th mat-header-cell *matHeaderCellDef mat-sort-header> Address </th>
-			<td mat-cell *matCellDef="let element"> {{element.address}} </td>
+			<td mat-cell *matCellDef="let element"> {{element.address.postcode}} </td>
 		</ng-container>
 
-		<tr mat-header-row *matHeaderRowDef="contactColumns"></tr>
-		<tr mat-row *matRowDef="let row; columns: contactColumns;"></tr>
+		<!-- Active? -->
+		<ng-container matColumnDef="active">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Active? </th>
+			<td mat-cell *matCellDef="let element">
+
+				<mat-icon class="green" *ngIf="element.active">check</mat-icon>
+				<mat-icon class="red" *ngIf="!element.active">close</mat-icon>
+
+			</td>
+
+		</ng-container>
+
+		<!-- Actions -->
+		<ng-container matColumnDef="actions">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header>Actions</th>
+			<td mat-cell *matCellDef="let element">
+				<button class="button" mat-stroked-button color="accent" [disabled]="!canEdit(element)"
+					(click)="setInactiveWarehouse(element)">
+					Set inactive
+				</button>
+				<button class="button" mat-stroked-button color="accent" (click)="deleteWarehouse(element)">
+					Delete
+				</button>
+			</td>
+		</ng-container>
+
+		<ng-container>
+			<tr mat-header-row *matHeaderRowDef="contactColumns"></tr>
+			<tr mat-row *matRowDef="let row; columns: contactColumns;"></tr>
+		</ng-container>
+
 	</table>
 
-	<mat-paginator [pageSizeOptions]="[5, 3, 10]" showFirstLastButtons></mat-paginator>
+	<mat-paginator class="mat-paginator" [length]="itemsCount" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+	</mat-paginator>
 
 </div>

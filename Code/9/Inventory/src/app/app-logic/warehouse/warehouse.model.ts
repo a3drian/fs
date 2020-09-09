@@ -1,28 +1,18 @@
-import { Address } from './address.model';
-
-export interface IWarehouse {
-	info: string;
-	phone: string;
-	openDays: string;
-	schedule: string;
-	address: Address;
-}
+import { IAddress } from 'inventory-interfaces/IAddress';
+import { IWarehouse } from 'inventory-interfaces/IWarehouse';
 
 export class Warehouse implements IWarehouse {
 
+	id: string;
 	info: string;
 	phone: string;
 	openDays: string;
 	schedule: string;
-	address: Address;
+	address: IAddress;
+	active: boolean;
 
-	constructor({ info, phone, openDays, schedule, address }:
-		{ info: string, phone: string, openDays: string, schedule: string, address: Address }) {
-		this.info = info;
-		this.phone = phone;
-		this.openDays = openDays;
-		this.schedule = schedule;
-		this.address = address;
+	public constructor(init?: Partial<IWarehouse>) {
+		Object.assign(this, init);
 	}
 
 	tostring(): string {

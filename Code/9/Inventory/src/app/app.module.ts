@@ -4,8 +4,6 @@ import { NgModule } from '@angular/core';
 import { AppRoutingModule, RoutingComponent } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-import { WarehouseService } from './app-logic/warehouse/warehouse.service';
-
 // material:
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatTableModule } from '@angular/material/table';
@@ -25,11 +23,16 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MainNavComponent } from './main-nav/main-nav.component';
+import { LayoutModule } from '@angular/cdk/layout';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatListModule } from '@angular/material/list';
 
 @NgModule({
 	declarations: [
 		AppComponent,
-		RoutingComponent
+		RoutingComponent,
+		MainNavComponent
 	],
 	imports: [
 		BrowserModule,
@@ -48,11 +51,12 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 		MatIconModule,
 		MatSlideToggleModule,
 		MatToolbarModule,
-		MatProgressBarModule
+		MatProgressBarModule,
+		LayoutModule,
+		MatSidenavModule,
+		MatListModule
 	],
-	providers: [
-		WarehouseService
-	],
+	providers: [],
 	bootstrap: [AppComponent]
 })
 export class AppModule { }
