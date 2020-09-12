@@ -1,0 +1,29 @@
+h1,
+div,
+form {
+  color: #3f51b5;
+  padding-top: 30px;
+  padding-left: 30px;
+}
+
+.column {
+  flex: 50%;
+  padding: 15px;
+}
+
+.row {
+  display: flex;
+}
+
+.centered {
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.camera {
+  width: 600px;
+  height: 600px;
+  padding: 30px;
+  box-sizing: border-box;
+}
