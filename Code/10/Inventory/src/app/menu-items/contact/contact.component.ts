@@ -103,7 +103,6 @@ export class ContactComponent implements OnInit {
 			.deleteItem(element)
 			.subscribe(
 				() => {
-					this.activeOnly;
 					console.log('deleteWarehouse(element)^');
 				}
 			);

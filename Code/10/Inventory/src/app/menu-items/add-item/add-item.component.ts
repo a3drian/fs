@@ -5,6 +5,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 // 8:
 import { InventoryListService } from '../../app-logic/inventory-list.service';
 // 9:
+import jsPDF from 'jspdf';
 
 @Component({
 	selector: 'app-add-item',
@@ -18,6 +19,7 @@ export class AddItemComponent implements OnInit {
 	itemId: string;
 	showForm = false;
 	buttonText = '';
+	idNotFound = false;
 
 	constructor(
 		private inventoryListService: InventoryListService,
@@ -25,10 +27,33 @@ export class AddItemComponent implements OnInit {
 		private router: Router,
 		private activatedRoute: ActivatedRoute
 	) {
-		this.activatedRoute.params.subscribe((params) => {
-			console.log('params:', params);
-			this.itemId = params.id ? params.id : '0';
-		});
+
+		this.activatedRoute.params.subscribe(
+			(params) => {
+				console.log('params:', params);
+				this.itemId = params.id ? params.id : '0';
+			}
+		);
+
+		if (this.itemId === '0') {
+		} else {
+			this.inventoryListService
+				.getDataById(this.itemId)
+				.subscribe(
+					(data) => {
+						console.log('constructor() data:', data);
+						this.idNotFound = false;
+						console.log('constructor(), (data), this.idNotFound:', this.idNotFound);
+					},
+					(error) => {
+						console.log('constructor(), (error), error:', error);
+						if (error.status === 404) {
+							this.idNotFound = true;
+						}
+						console.log('constructor(), (error) this.idNotFound:', this.idNotFound);
+					}
+				);
+		}
 	}
 
 	// all the input forms are left blank
@@ -37,17 +62,7 @@ export class AddItemComponent implements OnInit {
 		const today: Date = new Date();
 
 		console.log('displayEmptyForm():');
-		this.item = new InventoryItem({
-			id: '0',
-			name: '',
-			user: '',
-			location: '',
-			inventoryNumber: 0,
-			description: '',
-			createdAt: new Date(),
-			modifiedAt: new Date(),
-			active: true
-		});
+		this.item = new InventoryItem();
 
 		this.addItemForm = this.formBuilder.group({
 			name: ['', Validators.required],
@@ -62,7 +77,7 @@ export class AddItemComponent implements OnInit {
 		});
 	}
 
-	// pre-populates the form using information from the "item" retrieved from the service
+	// pre-populates the form using information from the 'item' retrieved from the service
 	displayItemInForm(): void {
 
 		console.log('displayItemInForm():');
@@ -105,8 +120,9 @@ export class AddItemComponent implements OnInit {
 						this.showForm = false;
 					}
 
-				}, (error) => {
-					console.log('(error) getDataById(id: string):', error);
+				},
+				(error) => {
+					console.log('(error) displayItemInForm(id: string):', error);
 				});
 	}
 
@@ -121,14 +137,26 @@ export class AddItemComponent implements OnInit {
 		}
 
 		if (inAddItemPage) {
+
 			this.buttonText = 'Add item';
 			this.displayBlankForm();
+
 		} else {
+
 			// face partea de initializare partiala a formularului, cand intri pe 'edit/10010', de ex.
 			this.buttonText = 'Edit item';
-			this.displayItemInForm();
-		}
 
+			setTimeout(
+				() => {
+					console.log('1 second timeout');
+
+					console.log('ngOnInit() this.idNotFound:', this.idNotFound);
+					if (!this.idNotFound) {
+						this.displayItemInForm();
+					}
+
+				}, 1000);
+		}
 	}
 
 	addNewItem(): void {
@@ -136,7 +164,7 @@ export class AddItemComponent implements OnInit {
 		const form = this.addItemForm.value;
 		this.item = new InventoryItem(
 			{
-				id: '',
+				// id: '',
 				name: form.name,
 				user: form.user,
 				location: form.location,
@@ -189,6 +217,39 @@ export class AddItemComponent implements OnInit {
 
 	public hasError = (controlName: string, errorName: string) => {
 		return this.addItemForm.controls[controlName].hasError(errorName);
+	}
+
+	showQRCode(): boolean {
+		if (this.itemId === '0' || !this.showForm) {
+			return false;
+		}
+		return true;
+	}
+
+	getBase64Image(img: any): string {
+		console.log('img:', img);
+		const canvas = document.createElement('canvas');
+		canvas.width = img.width;
+		canvas.height = img.height;
+		const ctx = canvas.getContext('2d');
+		ctx.drawImage(img, 0, 0);
+		const dataURL = canvas.toDataURL('image/png');
+		return dataURL;
+	}
+
+	downloadQRCode(): void {
+
+		const qrcode = document.getElementById('qrcode');
+		const doc = new jsPDF();
+
+		console.log('qrcode.firstChild:', qrcode.firstChild);
+		console.log('qrcode.firstChild.firstChild:', qrcode.firstChild.firstChild);
+		const canvas = qrcode.firstChild.firstChild;
+		const imageData = this.getBase64Image(canvas);
+
+		doc.addImage(imageData, 'png', 0, 0, 128, 128);
+
+		doc.save(`${this.itemId}.pdf`);
 	}
 
 }

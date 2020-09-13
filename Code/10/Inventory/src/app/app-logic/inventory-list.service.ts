@@ -85,9 +85,11 @@ export class InventoryListService {
 
 		const request = this.http.get<IInventoryItem>(url)
 			.pipe(
-				tap((response) => {
-					console.log('Inventory item fetched:', response);
-				})
+				tap(
+					(response) => {
+						console.log('Inventory item fetched:', response);
+					}
+				)
 			);
 		return request;
 	}
@@ -214,4 +216,5 @@ export class InventoryListService {
 
 		return request;
 	}
+
 }

@@ -1,0 +1,22 @@
+h1,
+div {
+  color: #3f51b5;
+  padding-top: 30px;
+  padding-left: 30px;
+}
+
+.form-div {
+  display: grid;
+  grid-template-columns: 120px 200px;
+  grid-template-areas: "theText theLabel";
+  margin-bottom: 10px;
+}
+
+.form-div-text {
+  font-size: 1.2em;
+  grid-area: theText;
+}
+
+.form-div-label {
+  grid-area: theLabel;
+}

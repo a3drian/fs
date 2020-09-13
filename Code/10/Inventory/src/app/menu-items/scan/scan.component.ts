@@ -21,21 +21,23 @@ export class ScanComponent implements OnInit {
 	ngOnInit(): void {
 	}
 
-	onPermissionResponse(permission: boolean) {
+	onPermissionResponse(permission: boolean): void {
 		console.log('Camera permission:', permission);
 		this.hasPermission = permission;
 	}
 
-	onCamerasFound(devices: MediaDeviceInfo[]) {
-		devices.forEach((device) => {
-			console.log('Camera device:', device.label);
-		})
+	onCamerasFound(devices: MediaDeviceInfo[]): void {
+		devices.forEach(
+			(device) => {
+				console.log('Camera device:', device.label);
+			}
+		);
 		this.availableDevice = devices;
 	}
 
-	onScanSuccess(data: string) {
-		console.log('Data from QR:', data);
-		this.router.navigate[`/item/${data}`];
+	onScanSuccess(id: string): void {
+		console.log('Data from QR:', id);
+		this.router.navigate([`/item/${id}`]);
 	}
 
 }

@@ -1,18 +1,60 @@
+<h1>
+	Item information
+</h1>
+
 <div *ngIf="itemIsFound">
 
-	<p>
-		Item information:
-	</p>
+	<div class="form-div">
+		<label class="form-div-text">ID:</label>
+		<label class="form-div-label">{{item.id}}</label>
+	</div>
 
-	<p>ID<b>:</b><i>{{item.id}}</i></p>
-	<p>Name<b>:</b><i>{{item.name}}</i></p>
-	<p>Description<b>:</b><i>{{item.description}}</i></p>
-	<p>User<b>:</b><i>{{item.user}}</i></p>
-	<p>Location<b>:</b><i>{{item.location}}</i></p>
-	<p>Inventory #<b>:</b><i>{{item.inventoryNumber}}</i></p>
-	<p>Created At:<b>:</b><i>{{item.createdAt}}</i></p>
-	<p>Modified At:<b>:</b><i>{{item.modifiedAt}}</i></p>
-	<p>Active?<b>:</b><i>{{item.active}}</i></p>
+	<div class="form-div">
+		<label class="form-div-text">Item name:</label>
+		<label class="form-div-label">{{item.name}}</label>
+	</div>
+
+	<div class="form-div">
+		<label class="form-div-text">User:</label>
+		<label class="form-div-label">{{item.user}}</label>
+	</div>
+
+	<div class="form-div">
+		<label class="form-div-text">Location:</label>
+		<label class="form-div-label">{{item.location}}</label>
+	</div>
+
+	<div class="form-div">
+		<label class="form-div-text">Inventory #:</label>
+		<label class="form-div-label">{{item.inventoryNumber}}</label>
+	</div>
+
+	<div class="form-div">
+		<label class="form-div-text">Description:</label>
+		<label class="form-div-label">{{item.description}}</label>
+	</div>
+
+	<div class="form-div">
+		<label class="form-div-text">Created At:</label>
+		<label class="form-div-label">{{item.createdAt}}</label>
+	</div>
+
+	<div class="form-div">
+		<label class="form-div-text">Modified At:</label>
+		<label class="form-div-label">{{item.modifiedAt}}</label>
+	</div>
+
+	<div class="form-div">
+		<label class="form-div-text">Active?</label>
+		<mat-icon class="green" *ngIf="item.active">check</mat-icon>
+		<mat-icon class="red" *ngIf="!item.active">close</mat-icon>
+	</div>
+
+	<div class="form-div">
+		<button class="button" mat-stroked-button color="accent" [disabled]="!canEdit()" (click)="editItem()">
+			Edit
+		</button>
+	</div>
 
 </div>
 

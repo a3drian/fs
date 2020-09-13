@@ -25,7 +25,7 @@ export class ShowItemComponent implements OnInit {
 				(params) => {
 					this.itemId = params.id;
 				}
-			)
+			);
 	}
 
 	ngOnInit(): void {
@@ -36,7 +36,15 @@ export class ShowItemComponent implements OnInit {
 					this.item = new InventoryItem(data);
 					this.itemIsFound = this.item ? true : false;
 				}
-			)
+			);
+	}
+
+	canEdit(): boolean {
+		return this.item.active;
+	}
+
+	editItem(): void {
+		this.router.navigate([`edit/${this.itemId}`]);
 	}
 
 }

@@ -31,6 +31,8 @@ import { MatListModule } from '@angular/material/list';
 import { QRCodeModule } from 'angularx-qrcode';
 import { ZXingScannerModule } from '@zxing/ngx-scanner';
 import { ShowItemComponent } from './menu-items/show-item/show-item.component';
+// print:
+import { NgxPrintModule } from 'ngx-print';
 
 @NgModule({
 	declarations: [
@@ -61,7 +63,8 @@ import { ShowItemComponent } from './menu-items/show-item/show-item.component';
 		MatSidenavModule,
 		MatListModule,
 		QRCodeModule,
-		ZXingScannerModule
+		ZXingScannerModule,
+		NgxPrintModule
 	],
 	providers: [],
 	bootstrap: [AppComponent]
