@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { tap, map } from 'rxjs/operators';
 // 9:
 import { IInventoryItem } from 'inventory-interfaces/IInventoryItem';
+import { InventoryItem } from './inventory-item';
 
 @Injectable({
 	providedIn: 'root',
@@ -95,29 +96,11 @@ export class InventoryListService {
 	}
 
 	// DELETE
-	setDataToInactive(toBeSetToInactive: IInventoryItem[]): void {
-		console.log('setDataToInactive(toBeSetToInactive: IInventoryItem[]):');
-		console.log(toBeSetToInactive);
-
-		toBeSetToInactive.forEach(element => {
-			// const index = this.inventoryData.indexOf(element);
-			// this.inventoryData[index].deleted = true;
-			// this.http.put('/api/inventory-items', {}, {});
-			console.log(element);
-		});
-
-		console.log('setDataToInactive(toBeSetToInactive: IInventoryItem[])^');
-	}
-
 	deleteItem(item: IInventoryItem): Observable<IInventoryItem> {
 		console.log('deleteItem(item: IInventoryItem):');
 		console.log('item:', item);
 		const url = `${this.BASE_URL}/${item.id}`;
 		console.log('url:', url);
-
-		// const request = this.http.delete<IInventoryItem>(url)
-		// 	.pipe()
-		// 	.subscribe();
 
 		const request = this.http.delete<IInventoryItem>(url)
 			.pipe(
@@ -139,17 +122,14 @@ export class InventoryListService {
 		const url = `${this.BASE_URL}/${item.id}`;
 		console.log('url:', url);
 
-		item.active = false;
+		const updatedItem = new InventoryItem(item);
+		updatedItem.active = false;
 
-		// const request = this.http.put<IInventoryItem>(this.BASE_URL, item)
-		// 	.pipe()
-		// 	.subscribe();
-
-		const request = this.http.put<IInventoryItem>(url, item)
+		const request = this.http.put<IInventoryItem>(url, updatedItem)
 			.pipe(
 				tap(
 					() => {
-						console.log('Item "', item.id, '" was set to inactive!');
+						console.log('Item "', updatedItem.id, '" was set to inactive!');
 					}
 				)
 			);
@@ -162,10 +142,6 @@ export class InventoryListService {
 	// ADD
 	addItem(item: IInventoryItem): Observable<IInventoryItem> {
 		console.log('addItem(item: IInventoryItem):');
-
-		// this.http.post<IInventoryItem>(this.BASE_URL, item)
-		// 	.pipe()
-		// 	.subscribe();
 
 		const request = this.http.post<IInventoryItem>(this.BASE_URL, item)
 			.pipe(
@@ -197,11 +173,6 @@ export class InventoryListService {
 		console.log('item:', item);
 		const url = `${this.BASE_URL}/${item.id}`;
 		console.log('url:', url);
-
-		// const request = this.http.put<IInventoryItem>(url, item)
-		// 	.pipe()
-		// 	.subscribe();
-		// console.log('editItem(item: IInventoryItem)^');
 
 		const request = this.http.put<IInventoryItem>(url, item)
 			.pipe(

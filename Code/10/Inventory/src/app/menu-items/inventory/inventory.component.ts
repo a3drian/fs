@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, EventEmitter, OnInit, ViewChild } from '@angular/core';
 
 import { InventoryListService } from '../../app-logic/inventory-list.service';
 import { MatPaginator } from '@angular/material/paginator';
@@ -42,6 +42,7 @@ export class InventoryComponent implements OnInit {
 	isLoading: boolean;
 	activeOnly$ = new BehaviorSubject(false);
 	itemsCount = 0;
+	refreshTable$ = new BehaviorSubject(false);
 
 	constructor(private inventoryListService: InventoryListService) { }
 
@@ -50,14 +51,14 @@ export class InventoryComponent implements OnInit {
 		console.log('InventoryComponent, ngOnInit():');
 
 		// Inventory List
-		merge(this.sort.sortChange, this.activeOnly$)
+		merge(this.sort.sortChange, this.activeOnly$, this.refreshTable$)
 			.subscribe(
 				() => {
 					this.paginator.pageIndex = 0;
 				}
 			);
 
-		merge(this.paginator.page, this.sort.sortChange, this.activeOnly$)
+		merge(this.paginator.page, this.sort.sortChange, this.activeOnly$, this.refreshTable$)
 			.pipe(
 				switchMap(
 					() => {
@@ -98,6 +99,16 @@ export class InventoryComponent implements OnInit {
 		this.activeOnly$.next(value);
 	}
 
+	// Refresh table
+	get refreshTable(): boolean {
+		return this.refreshTable$.value;
+	}
+
+	set refreshTable(value: boolean) {
+		this.refreshTable$.next(value);
+	}
+
+	// SELECTION
 	selectRow(row): void {
 		console.log('selectRow(row):');
 		console.log(row);
@@ -178,7 +189,7 @@ export class InventoryComponent implements OnInit {
 			.deleteItem(element)
 			.subscribe(
 				() => {
-					console.log('deleteInventoryItem(element)^');
+					this.refreshTable = true;
 				}
 			);
 	}
@@ -213,7 +224,7 @@ export class InventoryComponent implements OnInit {
 			.setInactiveItem(element)
 			.subscribe(
 				() => {
-
+					this.refreshTable = true;
 				}
 			);
 	}

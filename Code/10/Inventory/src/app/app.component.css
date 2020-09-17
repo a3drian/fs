@@ -38,3 +38,8 @@ span {
 mat-icon {
   font-size: 2em;
 }
+
+mat-toolbar a {
+  color: #5969c5;
+  text-decoration: none;
+}
