@@ -1,0 +1,65 @@
+<h1>
+	Item information
+</h1>
+
+<div *ngIf="itemIsFound">
+
+	<div class="form-div">
+		<label class="form-div-text">ID:</label>
+		<label class="form-div-label">{{item.id}}</label>
+	</div>
+
+	<div class="form-div">
+		<label class="form-div-text">Item name:</label>
+		<label class="form-div-label">{{item.name}}</label>
+	</div>
+
+	<div class="form-div">
+		<label class="form-div-text">User:</label>
+		<label class="form-div-label">{{item.user}}</label>
+	</div>
+
+	<div class="form-div">
+		<label class="form-div-text">Location:</label>
+		<label class="form-div-label">{{item.location}}</label>
+	</div>
+
+	<div class="form-div">
+		<label class="form-div-text">Inventory #:</label>
+		<label class="form-div-label">{{item.inventoryNumber}}</label>
+	</div>
+
+	<div class="form-div">
+		<label class="form-div-text">Description:</label>
+		<label class="form-div-label">{{item.description}}</label>
+	</div>
+
+	<div class="form-div">
+		<label class="form-div-text">Created At:</label>
+		<label class="form-div-label">{{item.createdAt}}</label>
+	</div>
+
+	<div class="form-div">
+		<label class="form-div-text">Modified At:</label>
+		<label class="form-div-label">{{item.modifiedAt}}</label>
+	</div>
+
+	<div class="form-div">
+		<label class="form-div-text">Active?</label>
+		<mat-icon class="green" *ngIf="item.active">check</mat-icon>
+		<mat-icon class="red" *ngIf="!item.active">close</mat-icon>
+	</div>
+
+	<div class="form-div">
+		<button class="button" mat-stroked-button color="accent" [disabled]="!canEdit()" (click)="editItem()">
+			Edit
+		</button>
+	</div>
+
+</div>
+
+<div *ngIf="!itemIsFound">
+	<p>
+		Item not found!
+	</p>
+</div>

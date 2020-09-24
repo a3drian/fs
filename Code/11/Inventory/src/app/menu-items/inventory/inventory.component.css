@@ -1,0 +1,60 @@
+h1,
+div {
+  color: #3f51b5;
+  padding-top: 30px;
+  padding-left: 30px;
+}
+
+table {
+  width: 100%;
+  background-color: #fef5ef;
+}
+
+.progress-bar-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #fef5ef;
+  height: 20px;
+}
+
+.progress-bar {
+  width: 98%;
+}
+
+.toggle-toolbar {
+  background-color: #fef5ef;
+}
+
+/*
+.mat-column-id {
+	flex: none;
+	width: 20%;
+}
+*/
+
+.button {
+  margin: 5px;
+}
+
+th {
+  font-size: 16px;
+}
+
+.red {
+  color: #ff4081;
+}
+.green {
+  color: #3f51b5;
+}
+
+.mat-paginator {
+  background-color: #fef5ef;
+}
+
+#search-box {
+  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-size: 16px;
+  width: 200px;
+  height: 30px;
+}

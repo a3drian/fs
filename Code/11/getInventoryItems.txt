@@ -1,0 +1,230 @@
+// v2
+async function getInventoryItems(
+	em: EntityManager,
+	page: number,
+	limit: number,
+	sort: string,
+	activeOnly: boolean,
+	name: string
+): Promise<Error | InventoryItem[] | Filter[]> {
+	if (!(em instanceof EntityManager)) {
+		return Error('invalid request');
+	}
+
+	let sorting: QueryOrderMap = {};
+	if (sort) {
+
+		const sortParams = sort.split('_');
+		const column = sortParams[0];
+		const order = sortParams[1];
+
+		console.log('sortParams:', sortParams);
+		console.log('column:', column);
+		console.log('order:', order);
+
+		if (column && order) {
+			sorting[column] = order === 'desc' ? QueryOrder.DESC : QueryOrder.ASC;
+			console.log('sorting:', sorting);
+		} else {
+			return Error('invalid params');
+		}
+	}
+
+	console.log('page:', page);
+	console.log('limit:', limit);
+	console.log('sort:', sort);
+	console.log('activeOnly:', activeOnly);
+	console.log('name:', name);
+
+	let options =
+	{
+		orderBy: sorting,
+		limit: limit,
+		offset: (page - 1) * limit,	// daca dorim pagina 1 cu 5 elemente => offset = 0, daca dormi pagina 2 => offset = 5, samd
+	};
+
+	let hasActive = false;
+	if (activeOnly) {
+		hasActive = true;
+	}
+	console.log('hasActive:', hasActive);
+
+	let hasName = false;
+	if (name) {
+		hasName = true;
+	}
+	console.log('hasName:', hasName);
+
+	let filter: Partial<Filter> = {};
+
+	if (activeOnly) {
+		filter.active = true;
+	}
+	if (name) {
+		filter.name = name;
+	}
+
+	if (!hasActive && !hasName) {
+		console.log('___Must send {}:');
+		console.log(filter);
+		console.log('________________');
+	}
+	if (hasActive && !hasName) {
+		console.log('___Must send only { active: true }:');
+		filter.active = true;
+		console.log(filter);
+		console.log('___________________________________');
+	}
+	if (!hasActive && hasName) {
+		console.log('___Must send only { name: name }:');
+		filter.name = name;
+		console.log(filter);
+		console.log('_________________________________');
+	}
+	if (hasActive && hasName) {
+		console.log('___Must send { active: true, name: name }:');
+		filter.active = true;
+		filter.name = name;
+		console.log(filter);
+		console.log('__________________________________________');
+	}
+
+	// {
+	// 	active: true,
+	// 	name: 'HS04'
+	// }
+
+	try {
+
+		const items = await em.find(
+			InventoryItem,
+			filter,
+			options
+		);
+		await new Promise(
+			(resolve) => {
+				setTimeout(resolve, 500)
+			}
+		);
+
+		// console.log('items:', items);
+
+		console.log('');
+		console.log('inventory-item.service.ts, getInventoryItems():');
+		// console.log(items);
+		// items.forEach(item => {
+		// 	console.log(item.active);
+		// });
+		console.log('items.length:', items.length);
+		console.log('inventory-item.service.ts, getInventoryItems()^');
+
+		return items;
+	} catch (ex) {
+		return ex;
+	}
+}
+
+// v2
+
+// v1
+async function getInventoryItems(
+	em: EntityManager,
+	page: number,
+	limit: number,
+	sort: string,
+	activeOnly: boolean,
+	name: string
+): Promise<Error | InventoryItem[]> {
+	if (!(em instanceof EntityManager)) {
+		return Error('invalid request');
+	}
+
+	let sorting: QueryOrderMap = {};
+	if (sort) {
+
+		const sortParams = sort.split('_');
+		const column = sortParams[0];
+		const order = sortParams[1];
+
+		console.log('sortParams:', sortParams);
+		console.log('column:', column);
+		console.log('order:', order);
+
+		if (column && order) {
+			sorting[column] = order === 'desc' ? QueryOrder.DESC : QueryOrder.ASC;
+			console.log('sorting:', sorting);
+		} else {
+			return Error('invalid params');
+		}
+	}
+
+	console.log('page:', page);
+	console.log('limit:', limit);
+	console.log('sort:', sort);
+	console.log('activeOnly:', activeOnly);
+	console.log('name:', name);
+
+	let filterMongo: FilterQueryMongo<InventoryItem> = {};
+	filterMongo.active = activeOnly ? true : {};
+	filterMongo.name = name ? name : '';
+	console.log('filterMongo:', filterMongo);
+
+	let filterORM: FilterQueryORM<InventoryItem> =
+	{
+		active: activeOnly ? true : {},
+		name: name ? name : '',
+	};
+	console.log('filterORM:', filterORM);
+
+	let options =
+	{
+		orderBy: sorting,
+		limit: limit,
+		offset: (page - 1) * limit,	// daca dorim pagina 1 cu 5 elemente => offset = 0, daca dormi pagina 2 => offset = 5, samd
+	};
+
+	let filter = {
+		active: activeOnly ? true : {},
+		name: name ? name : ''
+	};
+	console.log('filter:', filter);
+
+	try {
+
+		// const filterORMItems = em.find(InventoryItem, filterORM, options);
+		// const filterMongoItems = em.find(InventoryItem, filterMongo, options);
+
+		const items = await em.find(
+			InventoryItem,
+			{
+				active: true,
+				name: 'HS04'
+			},
+			options
+		);
+		await new Promise(
+			(resolve) => {
+				setTimeout(resolve, 500)
+			}
+		);
+
+		console.log('items:', items);
+		// console.log('filterORMItems:', filterORMItems);
+		// console.log('filterMongoItems:', filterMongoItems);
+
+		console.log('');
+		console.log('inventory-item.service.ts, getInventoryItems():');
+		// console.log(items);
+		// items.forEach(item => {
+		// 	console.log(item.active);
+		// });
+		console.log('items.length:', items.length);
+		console.log('inventory-item.service.ts, getInventoryItems()^');
+
+		return items;
+	} catch (ex) {
+		return ex;
+	}
+}
+
+// v1
