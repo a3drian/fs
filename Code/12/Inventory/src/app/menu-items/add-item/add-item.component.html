@@ -1,0 +1,125 @@
+<h1>
+	{{buttonText}}
+</h1>
+
+<div>
+
+	<div class="row">
+
+		<div class="column">
+
+			<h2 *ngIf="idNotFound">
+				You have provided an invalid item ID!
+			</h2>
+
+			<form *ngIf="showForm" [formGroup]="addItemForm" (ngSubmit)="onSubmit()">
+				<!-- Item name -->
+				<p>
+					<mat-form-field appearance="outline">
+						<mat-label>
+							Item name:
+						</mat-label>
+						<input matInput type="text" formControlName="name"
+							placeholder="Eg: Manufacturer name, model name..." />
+						<mat-error *ngIf="hasError('name', 'required')">
+							Item name is required!
+						</mat-error>
+					</mat-form-field>
+				</p>
+				<!-- User name -->
+				<p>
+					<mat-form-field appearance="outline">
+						<mat-label>
+							User:
+						</mat-label>
+						<input matInput type="text" formControlName="user" placeholder="Eg: Teodor-Adrian Manghiuc" />
+						<mat-error *ngIf="hasError('user', 'required')">
+							User name is required!
+						</mat-error>
+					</mat-form-field>
+				</p>
+				<!-- Location -->
+				<p>
+					<mat-form-field appearance="outline">
+						<mat-label>
+							Location:
+						</mat-label>
+						<input matInput type="text" formControlName="location"
+							placeholder="Eg: Location in the building, floor, department..." />
+						<mat-error *ngIf="hasError('location', 'required')">
+							Location of item is required!
+						</mat-error>
+					</mat-form-field>
+				</p>
+				<!-- Inventory # -->
+				<p>
+					<mat-form-field appearance="outline">
+						<mat-label>
+							Inventory #:
+						</mat-label>
+						<input matInput type="text" formControlName="inventoryNumber"
+							placeholder="Eg: The number printed on the sticker..." />
+						<mat-error *ngIf="hasError('inventoryNumber', 'required')">
+							Inventory number is required!
+						</mat-error>
+					</mat-form-field>
+				</p>
+				<!-- Description -->
+				<p>
+					<mat-form-field appearance="outline">
+						<mat-label>
+							Description:
+						</mat-label>
+						<textarea matInput type="text" formControlName="description"
+							placeholder="Eg: Inventory item details..."></textarea>
+						<!--
+				<mat-error *ngIf="addItemForm.controls['description'].valid">
+					description cannot have more than 100 characters!
+				</mat-error>
+			-->
+					</mat-form-field>
+				</p>
+				<!-- Creation date -->
+				<p>
+					<mat-form-field appearance="outline">
+						<mat-label>
+							Created at:
+						</mat-label>
+						<input matInput type="date" formControlName="createdAt" />
+						<mat-error *ngIf="hasError('createdAt', 'required')">
+							Date of creation is required!
+						</mat-error>
+					</mat-form-field>
+				</p>
+				<button mat-stroked-button color="accent" type="submit" [disabled]="!addItemForm.valid">
+					{{buttonText}}
+				</button>
+			</form>
+		</div>
+
+		<div class="column" *ngIf="showQRCode()">
+
+			<!-- QR Code -->
+			<div class="row">
+				<qrcode id="qrcode" [qrdata]="itemId" [size]="256" [level]="'M'" [width]="256" [margin]="2">
+				</qrcode>
+			</div>
+
+			<div class="row">
+				<button mat-stroked-button color="accent" type="button" (click)="downloadQRCode()">
+					Download QRCode (.pdf)
+				</button>
+			</div>
+
+		</div>
+
+	</div>
+
+</div>
+
+<br>
+
+<div *ngIf="showForm">
+	<p>Form value:<br>{{ addItemForm.value | json }}</p>
+	<p>Form status:<br>{{ addItemForm.status }}</p>
+</div>

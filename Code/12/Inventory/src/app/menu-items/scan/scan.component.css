@@ -1,0 +1,40 @@
+h1,
+div {
+  color: #3f51b5;
+  padding-top: 30px;
+  padding-left: 30px;
+}
+
+.column {
+  flex: 50%;
+  padding: 15px;
+}
+
+.row {
+  display: flex;
+}
+
+.centered {
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+}
+
+.camera {
+  width: 512px;
+  height: 512px;
+  padding: 30px;
+  box-sizing: border-box;
+}
+
+.button {
+  margin-bottom: 200px;
+}
+
+.success {
+  color: #3f51b5;
+}
+
+.error {
+	color: #ff4081;
+}

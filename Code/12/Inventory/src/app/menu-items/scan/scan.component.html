@@ -1,0 +1,28 @@
+<h1>
+	Scan
+</h1>
+
+<div>
+	<button class="button" *ngIf="!showCamera" mat-stroked-button color="accent" type="button" (click)="enableCamera()">
+		Turn on camera
+	</button>
+	<h2 class="success" *ngIf="!cameraLoaded && showCamera">
+		Loading camera...
+	</h2>
+	<h2 class="error" *ngIf="showError() && cameraLoaded">
+		{{error}}
+	</h2>
+</div>
+
+<div class="centered">
+
+	<div *ngIf="showCamera" class="camera">
+
+		<zxing-scanner [torch]="torchEnabled" [tryHarder]="tryHarder" [(device)]="currentDevice" [formats]="formats"
+			(permissionResponse)="onPermissionResponse($event)" (camerasFound)="onCamerasFound($event)"
+			(scanSuccess)="onScanSuccess($event)" (hasDevices)="onHasDevices($event)">
+		</zxing-scanner>
+
+	</div>
+
+</div>

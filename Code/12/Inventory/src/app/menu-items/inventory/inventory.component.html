@@ -1,0 +1,139 @@
+<h1>
+	Inventory
+</h1>
+
+<div>
+
+	<h2>
+		<label for="search-box">Filter items by name...</label>
+	</h2>
+
+	<input #searchBox id="search-box" (input)="search(searchBox.value)" />
+
+	<mat-toolbar class="toggle-toolbar">
+		<mat-toolbar-row>
+			<mat-slide-toggle [(ngModel)]="activeOnly">
+				{{ activeOnly ? 'Active data only' : 'All data' }}
+			</mat-slide-toggle>
+		</mat-toolbar-row>
+	</mat-toolbar>
+
+	<div class="progress-bar-container">
+		<mat-progress-bar class="progress-bar" *ngIf="isLoading" mode="indeterminate">
+		</mat-progress-bar>
+	</div>
+
+	<table mat-table [dataSource]="inventoryItems" matSort>
+
+		<!-- Selection checkbox -->
+		<ng-container matColumnDef="select">
+			<th mat-header-cell *matHeaderCellDef>
+				<mat-checkbox (change)="onMasterSelectionToggleChange($event)" [checked]="isMasterSelection()"
+					[indeterminate]="isIndeterminateSelection()">
+				</mat-checkbox>
+			</th>
+			<td mat-cell *matCellDef="let row">
+				<mat-checkbox (change)="selectRow(row)" [checked]="checkIsRowSelected(row)"></mat-checkbox>
+			</td>
+		</ng-container>
+
+		<!-- ID -->
+		<ng-container matColumnDef="id">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
+			<td mat-cell *matCellDef="let element"> {{element.id}} </td>
+		</ng-container>
+
+		<!-- Name -->
+		<ng-container matColumnDef="name">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
+			<td mat-cell *matCellDef="let element"> {{element.name}} </td>
+		</ng-container>
+
+		<!-- Description -->
+		<ng-container matColumnDef="description">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Description </th>
+			<td mat-cell *matCellDef="let element"> {{element.description}} </td>
+		</ng-container>
+
+		<!-- User -->
+		<ng-container matColumnDef="user">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> User </th>
+			<td mat-cell *matCellDef="let element"> {{element.user}} </td>
+		</ng-container>
+
+		<!-- Location -->
+		<ng-container matColumnDef="location">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Location </th>
+			<td mat-cell *matCellDef="let element"> {{element.location}} </td>
+		</ng-container>
+
+		<!-- Inventory Number -->
+		<ng-container matColumnDef="inventoryNumber">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Inventory # </th>
+			<td mat-cell *matCellDef="let element"> {{element.inventoryNumber}} </td>
+		</ng-container>
+
+		<!-- createdAt Date -->
+		<ng-container matColumnDef="createdAt">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Created </th>
+			<td mat-cell *matCellDef="let element"> {{element.createdAt | date }} </td>
+		</ng-container>
+
+		<!-- modifiedAt Date -->
+		<ng-container matColumnDef="modifiedAt">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Modified </th>
+			<td mat-cell *matCellDef="let element"> {{element.modifiedAt | date}} </td>
+		</ng-container>
+
+		<!-- Active? -->
+		<ng-container matColumnDef="active">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header> Active? </th>
+			<td mat-cell *matCellDef="let element">
+
+				<!-- {{element.active}} -->
+				<mat-icon class="green" *ngIf="element.active">check</mat-icon>
+				<mat-icon class="red" *ngIf="!element.active">close</mat-icon>
+
+			</td>
+
+		</ng-container>
+
+		<!-- Actions -->
+		<ng-container matColumnDef="actions">
+			<th mat-header-cell *matHeaderCellDef mat-sort-header>Actions</th>
+			<td mat-cell *matCellDef="let element">
+				<button class="button" routerLink="/edit/{{ element.id }}" [disabled]="!canEdit(element)" mat-stroked-button
+					color="accent" (click)="editInventoryItem(element)">
+					Edit
+				</button>
+				<button class="button" mat-stroked-button color="accent" [disabled]="!canEdit(element)"
+					(click)="setInactiveInventoryItem(element)">
+					Set inactive
+				</button>
+				<button class="button" mat-stroked-button color="accent" (click)="deleteInventoryItem(element)">
+					Delete
+				</button>
+			</td>
+		</ng-container>
+
+		<ng-container>
+			<tr mat-header-row *matHeaderRowDef="inventoryColumns"></tr>
+			<tr mat-row *matRowDef="let row; columns: inventoryColumns;"></tr>
+		</ng-container>
+
+	</table>
+
+	<mat-paginator class="mat-paginator" [length]="itemsCount" [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons>
+	</mat-paginator>
+
+	<button class="button" mat-stroked-button color="accent" [disabled]="canDeleteSelection()"
+		(click)="deleteSelection()">
+		Delete selection
+	</button>
+
+	<button class="button" mat-stroked-button color="accent" [disabled]="canSetInactiveSelection()"
+		(click)="setInactiveSelection()">
+		Set inactive
+	</button>
+
+</div>

@@ -1,0 +1,45 @@
+mat-nav-list a {
+  color: #fef5ef;
+  font-size: 1.2em;
+  text-decoration: none;
+}
+
+.mat-sidenav {
+  background-color: #3f51b5;
+  width: 120px;
+}
+
+.sidenav-toolbar {
+  height: 52px;
+}
+
+.content-toolbar {
+  height: 60px;
+}
+
+.footer-toolbar {
+  height: 60px;
+}
+
+.footer-toolbar-span {
+  color: #5969c5;
+  font-size: 0.6em;
+}
+
+.mat-sidenav-content {
+  background-color: #fef5ef;
+}
+
+span {
+  font-size: 1.2em;
+  color: #fef5ef;
+}
+
+mat-icon {
+  font-size: 2em;
+}
+
+mat-toolbar a {
+  color: #5969c5;
+  text-decoration: none;
+}
